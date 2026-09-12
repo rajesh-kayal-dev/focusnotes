@@ -6,13 +6,13 @@ Build the project in this order.
 
 ### 1. Project Setup
 
-- [ ] Create monorepo
-- [ ] Setup React + TypeScript + Vite
-- [ ] Setup Tailwind CSS
-- [ ] Setup PWA
-- [ ] Setup ESLint + Prettier
-- [ ] Setup project structure
-- [ ] Setup GitHub repository
+- [x] Create monorepo
+- [x] Setup React + TypeScript + Vite
+- [x] Setup Tailwind CSS
+- [x] Setup PWA
+- [x] Setup ESLint + Prettier
+- [x] Setup project structure
+- [x] Setup GitHub repository
 
 Branch:
 
@@ -26,13 +26,13 @@ feature/project-setup
 
 Build the basic application layout.
 
-* [ ] App layout
-* [ ] Sidebar
-* [ ] Top bar
-* [ ] Notes list
-* [ ] Note content area
-* [ ] New Note
-* [ ] Note menu
+* [x] App layout
+* [x] Sidebar
+* [x] Top bar
+* [x] Notes list
+* [x] Note content area
+* [x] New Note
+* [x] Note menu
 
 Branch:
 
@@ -46,13 +46,13 @@ feature/app-ui
 
 Implement local notes.
 
-* [ ] Create note
-* [ ] Read note
-* [ ] Edit note
-* [ ] Rename note
-* [ ] Delete note
-* [ ] Auto save
-* [ ] IndexedDB storage
+* [x] Create note
+* [x] Read note
+* [x] Edit note
+* [x] Rename note
+* [x] Delete note
+* [x] Auto save
+* [x] IndexedDB storage
 
 Branch:
 
@@ -66,12 +66,12 @@ feature/notes
 
 Implement Markdown support.
 
-* [ ] Markdown rendering
-* [ ] Direct editing
-* [ ] Headings
-* [ ] Lists
-* [ ] Checkboxes
-* [ ] Links
+* [x] Markdown rendering
+* [x] Direct editing
+* [x] Headings
+* [x] Lists
+* [x] Checkboxes
+* [x] Links
 * [ ] Code blocks
 
 Branch:
@@ -86,10 +86,10 @@ feature/markdown
 
 Implement note search.
 
-* [ ] Search button
-* [ ] Search interface
-* [ ] Search notes
-* [ ] Open search result
+* [x] Search button
+* [x] Search interface
+* [x] Search notes
+* [x] Open search result
 
 Branch:
 
@@ -103,11 +103,11 @@ feature/search
 
 Implement distraction-free reading.
 
-* [ ] Open Focus Mode
-* [ ] Hide sidebar
-* [ ] Hide controls
-* [ ] Full-screen content
-* [ ] Keyboard shortcut to exit
+* [x] Open Focus Mode
+* [x] Hide sidebar
+* [x] Hide controls
+* [x] Full-screen content
+* [x] Keyboard shortcut to exit
 
 Branch:
 
@@ -121,9 +121,9 @@ feature/focus-mode
 
 Allow users to keep their notes.
 
-* [ ] Download Markdown
-* [ ] Generate `.md` file
-* [ ] Use note title as filename
+* [x] Download Markdown
+* [x] Generate `.md` file
+* [x] Use note title as filename
 
 Branch:
 
