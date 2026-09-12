@@ -43,11 +43,11 @@ const SearchDialog = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-slate-950/80 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-zinc-950/80 backdrop-blur-sm px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl rounded-xl border border-white/10 bg-slate-900 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+        className="w-full max-w-xl rounded-xl border border-white/10 bg-zinc-900 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center border-b border-white/10 px-4 py-3">
@@ -57,14 +57,14 @@ const SearchDialog = ({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search notes by title or content..."
-            className="flex-1 bg-transparent text-white placeholder-slate-500 text-sm outline-none"
+            className="flex-1 bg-transparent text-zinc-100 placeholder-zinc-500 text-sm outline-none"
           />
 
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
-              className="text-xs text-slate-400 hover:text-white px-2 py-1 transition"
+              className="text-xs text-zinc-400 hover:text-zinc-100 px-2 py-1 transition"
             >
               Clear
             </button>
@@ -73,7 +73,7 @@ const SearchDialog = ({
           <button
             type="button"
             onClick={onClose}
-            className="ml-2 text-xs text-slate-400 hover:text-white border border-white/10 rounded px-2 py-1 transition"
+            className="ml-2 text-xs text-zinc-400 hover:text-zinc-100 border border-white/10 rounded px-2 py-1 transition"
           >
             Esc
           </button>
@@ -81,7 +81,7 @@ const SearchDialog = ({
 
         <div className="overflow-y-auto p-2 space-y-1">
           {filteredNotes.length === 0 ? (
-            <div className="py-8 text-center text-sm text-slate-500">
+            <div className="py-8 text-center text-sm text-zinc-500">
               No notes found matching "{query}"
             </div>
           ) : (
@@ -97,10 +97,10 @@ const SearchDialog = ({
                   onClick={() => handleSelect(note.id)}
                   className="w-full text-left p-3 rounded-lg hover:bg-white/5 transition flex flex-col gap-1 group border border-transparent hover:border-white/5"
                 >
-                  <span className="text-sm font-medium text-white group-hover:text-sky-400 transition truncate">
+                  <span className="text-sm font-medium text-zinc-100 group-hover:text-blue-400 transition truncate">
                     {note.title || "Untitled Note"}
                   </span>
-                  <span className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                  <span className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                     {snippet}
                   </span>
                 </button>

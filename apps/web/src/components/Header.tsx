@@ -23,7 +23,7 @@ const Header = ({
             type="button"
             onClick={onToggleSidebar}
             title="Open sidebar · Ctrl+B"
-            className="group -ml-2 flex shrink-0 items-center justify-center rounded-lg p-1.5 text-slate-400 transition hover:bg-white/5 hover:text-white focus:outline-none"
+            className="group -ml-2 flex shrink-0 items-center justify-center rounded-lg p-1.5 text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 focus:outline-none"
           >
             <img
               src={focusNotesLogo}
@@ -46,7 +46,7 @@ const Header = ({
           </button>
         )}
 
-        <h2 className="truncate text-sm font-medium text-slate-300">
+        <h2 className="truncate text-sm font-medium text-zinc-200">
           {note?.title || "Untitled Note"}
         </h2>
       </div>
@@ -55,7 +55,7 @@ const Header = ({
         <button
           type="button"
           onClick={onToggleFocus}
-          className="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
+          className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100"
         >
           Focus
         </button>
@@ -64,7 +64,7 @@ const Header = ({
           type="button"
           onClick={() => downloadNote(note)}
           disabled={!note}
-          className="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white disabled:pointer-events-none disabled:opacity-50"
+          className="rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 disabled:pointer-events-none disabled:opacity-50"
         >
           Download
         </button>

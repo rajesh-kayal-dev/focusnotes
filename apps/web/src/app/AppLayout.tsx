@@ -4,6 +4,7 @@ import MainContent from "../components/MainContent";
 import Sidebar from "../components/Sidebar";
 import useFocusMode from "../features/focus/useFocusMode";
 import useNotes from "../features/notes/useNotes";
+import usePWAInstall from "../features/pwa/usePWAInstall";
 import SearchDialog from "../features/search/SearchDialog";
 
 const AppLayout = () => {
@@ -11,6 +12,8 @@ const AppLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
   const { isFocusMode, toggleFocusMode } = useFocusMode(isSearchOpen);
+  const { canInstall: canInstallPWA, installPWA: onInstallPWA } =
+    usePWAInstall();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -53,14 +56,14 @@ const AppLayout = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-zinc-400">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-zinc-100">
       {!isFocusMode && isSidebarOpen && (
         <Sidebar
           notes={notes}
@@ -74,6 +77,8 @@ const AppLayout = () => {
           onTogglePinNote={togglePinNote}
           onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
           onOpenHowToUse={() => setIsHowToUseOpen(true)}
+          canInstallPWA={canInstallPWA}
+          onInstallPWA={onInstallPWA}
         />
       )}
 

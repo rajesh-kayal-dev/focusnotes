@@ -1,9 +1,10 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnpm-store/
 
 # Build output
 dist/
+dev-dist/
 build/
 coverage/
 

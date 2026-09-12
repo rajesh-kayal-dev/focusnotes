@@ -25,7 +25,7 @@ const MilkdownEditor = ({ content, onChange }: MilkdownEditorProps) => {
   );
 
   return (
-    <div className="milkdown-container mt-6 w-full text-[16px] leading-8 text-slate-300">
+    <div className="milkdown-container mt-6 w-full text-[16px] leading-8 text-zinc-300">
       <Milkdown />
     </div>
   );

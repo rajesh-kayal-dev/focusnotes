@@ -13,7 +13,7 @@ type NoteEditorProps = {
 const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
   if (!note) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-slate-500">
+      <div className="flex min-h-[60vh] items-center justify-center text-zinc-500">
         Select a note to start writing.
       </div>
     );
@@ -29,7 +29,7 @@ const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
             title: event.target.value,
           })
         }
-        className="w-full bg-transparent text-4xl font-semibold tracking-tight text-white outline-none placeholder:text-slate-600"
+        className="w-full bg-transparent text-4xl font-semibold tracking-tight text-zinc-100 outline-none placeholder:text-zinc-600"
         placeholder="Untitled Note"
       />
 
