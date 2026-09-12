@@ -10,6 +10,8 @@ type MainContentProps = {
   ) => void;
   isFocusMode?: boolean;
   onToggleFocus?: () => void;
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
 };
 
 const MainContent = ({
@@ -17,6 +19,8 @@ const MainContent = ({
   onUpdateNote,
   isFocusMode = false,
   onToggleFocus,
+  onToggleSidebar,
+  isSidebarOpen = true,
 }: MainContentProps) => {
   return (
     <main className="flex h-screen flex-1 flex-col">
@@ -31,15 +35,17 @@ const MainContent = ({
           </button>
         </div>
       ) : (
-        <Header note={note} onToggleFocus={onToggleFocus} />
+        <Header
+          note={note}
+          onToggleFocus={onToggleFocus}
+          onToggleSidebar={onToggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
       )}
 
       <section className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-4xl px-8 py-12">
-          <NoteEditor
-            note={note}
-            onUpdateNote={onUpdateNote}
-          />
+          <NoteEditor note={note} onUpdateNote={onUpdateNote} />
         </div>
       </section>
     </main>
