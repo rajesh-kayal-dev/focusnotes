@@ -20,6 +20,11 @@ const Sidebar = ({
   onOpenSearch,
   onRenameNote,
 }: SidebarProps) => {
+  const isMac =
+    typeof navigator !== "undefined" &&
+    /Mac|iPod|iPhone|iPad/.test(navigator.userAgent || "");
+  const shortcutHint = isMac ? "⌘K" : "Ctrl+K";
+
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
       <div className="flex h-16 items-center border-b border-white/10 px-5">
@@ -32,9 +37,12 @@ const Sidebar = ({
         <button
           type="button"
           onClick={onOpenSearch}
-          className="w-full rounded-lg border border-white/10 px-4 py-2 text-left text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
+          className="flex w-full items-center justify-between rounded-lg border border-white/10 px-4 py-2 text-left text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
         >
-          Search
+          <span>Search</span>
+          <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-slate-400">
+            {shortcutHint}
+          </kbd>
         </button>
 
         <button
