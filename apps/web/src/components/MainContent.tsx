@@ -14,6 +14,7 @@ type MainContentProps = {
   isSidebarOpen?: boolean;
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  zoom?: number;
 };
 
 const MainContent = ({
@@ -25,6 +26,7 @@ const MainContent = ({
   isSidebarOpen = true,
   isFullscreen = false,
   onToggleFullscreen,
+  zoom = 100,
 }: MainContentProps) => {
   return (
     <main className="flex h-screen flex-1 flex-col">
@@ -104,7 +106,15 @@ const MainContent = ({
       )}
 
       <section className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-4xl px-8 py-12">
+        <div
+          className="mx-auto w-full px-6 pt-10 pb-24 md:px-12 md:pt-12 md:pb-32"
+          style={
+            {
+              maxWidth: `calc(1040px * var(--note-zoom, 1))`,
+              "--note-zoom": (zoom ?? 100) / 100,
+            } as React.CSSProperties
+          }
+        >
           <NoteEditor note={note} onUpdateNote={onUpdateNote} />
         </div>
       </section>
