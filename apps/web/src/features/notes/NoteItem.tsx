@@ -7,6 +7,7 @@ type NoteItemProps = {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onRename?: (id: string, newTitle: string) => void;
+  onDuplicate?: (id: string) => void;
 };
 
 const NoteItem = ({
@@ -15,6 +16,7 @@ const NoteItem = ({
   onSelect,
   onDelete,
   onRename,
+  onDuplicate,
 }: NoteItemProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -101,6 +103,19 @@ const NoteItem = ({
             className="w-full rounded-md px-3 py-2 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
           >
             Rename
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false);
+              if (onDuplicate) {
+                onDuplicate(note.id);
+              }
+            }}
+            className="w-full rounded-md px-3 py-2 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+          >
+            Duplicate
           </button>
 
           <button

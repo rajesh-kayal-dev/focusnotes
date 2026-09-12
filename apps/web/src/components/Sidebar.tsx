@@ -9,6 +9,7 @@ type SidebarProps = {
   onDeleteNote: (id: string) => void;
   onOpenSearch: () => void;
   onRenameNote?: (id: string, title: string) => void;
+  onDuplicateNote?: (id: string) => void;
 };
 
 const Sidebar = ({
@@ -19,6 +20,7 @@ const Sidebar = ({
   onDeleteNote,
   onOpenSearch,
   onRenameNote,
+  onDuplicateNote,
 }: SidebarProps) => {
   const isMac =
     typeof navigator !== "undefined" &&
@@ -68,6 +70,7 @@ const Sidebar = ({
               onSelect={onSelectNote}
               onDelete={onDeleteNote}
               onRename={onRenameNote}
+              onDuplicate={onDuplicateNote}
             />
           ))}
         </div>
