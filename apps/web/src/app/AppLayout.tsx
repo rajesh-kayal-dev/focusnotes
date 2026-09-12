@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import HowToUseDialog from "../components/HowToUseDialog";
 import MainContent from "../components/MainContent";
 import Sidebar from "../components/Sidebar";
 import useFocusMode from "../features/focus/useFocusMode";
@@ -8,6 +9,7 @@ import SearchDialog from "../features/search/SearchDialog";
 const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
   const { isFocusMode, toggleFocusMode } = useFocusMode(isSearchOpen);
 
   useEffect(() => {
@@ -44,6 +46,11 @@ const AppLayout = () => {
     isLoading,
   } = useNotes();
 
+  useEffect(() => {
+    const title = activeNote?.title.trim();
+    document.title = title || "focus";
+  }, [activeNote?.title]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-400">
@@ -66,6 +73,7 @@ const AppLayout = () => {
           onDuplicateNote={duplicateNote}
           onTogglePinNote={togglePinNote}
           onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
+          onOpenHowToUse={() => setIsHowToUseOpen(true)}
         />
       )}
 
@@ -83,6 +91,11 @@ const AppLayout = () => {
         onClose={() => setIsSearchOpen(false)}
         notes={notes}
         onSelectNote={setActiveNoteId}
+      />
+
+      <HowToUseDialog
+        isOpen={isHowToUseOpen}
+        onClose={() => setIsHowToUseOpen(false)}
       />
     </div>
   );

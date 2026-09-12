@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import focusNotesLogo from "../assets/FocousNotes.png";
 import type { Note } from "../features/notes/types";
 import NoteItem from "../features/notes/NoteItem";
 
@@ -14,6 +15,7 @@ type SidebarProps = {
   onTogglePinNote?: (id: string) => void;
   onDownloadNote?: (note: Note) => void;
   onToggleSidebar?: () => void;
+  onOpenHowToUse?: () => void;
 };
 
 const Sidebar = ({
@@ -28,6 +30,7 @@ const Sidebar = ({
   onTogglePinNote,
   onDownloadNote,
   onToggleSidebar,
+  onOpenHowToUse,
 }: SidebarProps) => {
   const isMac =
     typeof navigator !== "undefined" &&
@@ -43,9 +46,13 @@ const Sidebar = ({
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
       <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
-        <h1 className="text-lg font-semibold tracking-tight">
-          FocusNotes
-        </h1>
+        <div className="flex items-center">
+          <img
+            src={focusNotesLogo}
+            alt="FocusNotes Logo"
+            className="h-8 w-auto object-contain"
+          />
+        </div>
 
         {onToggleSidebar && (
           <button
@@ -113,6 +120,31 @@ const Sidebar = ({
           ))}
         </div>
       </div>
+
+      {onOpenHowToUse && (
+        <div className="border-t border-white/10 p-3">
+          <button
+            type="button"
+            onClick={onOpenHowToUse}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-400 transition hover:bg-white/5 hover:text-white"
+          >
+            <svg
+              className="h-4 w-4 shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>How to use</span>
+          </button>
+        </div>
+      )}
     </aside>
   );
 };
