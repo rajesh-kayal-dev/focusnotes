@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { Note } from "../features/notes/types";
 import NoteItem from "../features/notes/NoteItem";
 
@@ -10,6 +11,9 @@ type SidebarProps = {
   onOpenSearch: () => void;
   onRenameNote?: (id: string, title: string) => void;
   onDuplicateNote?: (id: string) => void;
+  onTogglePinNote?: (id: string) => void;
+  onDownloadNote?: (note: Note) => void;
+  onToggleSidebar?: () => void;
 };
 
 const Sidebar = ({
@@ -21,18 +25,50 @@ const Sidebar = ({
   onOpenSearch,
   onRenameNote,
   onDuplicateNote,
+  onTogglePinNote,
+  onDownloadNote,
+  onToggleSidebar,
 }: SidebarProps) => {
   const isMac =
     typeof navigator !== "undefined" &&
     /Mac|iPod|iPhone|iPad/.test(navigator.userAgent || "");
   const shortcutHint = isMac ? "⌘K" : "Ctrl+K";
 
+  const sortedNotes = useMemo(() => {
+    const pinned = notes.filter((note) => Boolean(note.isPinned));
+    const unpinned = notes.filter((note) => !note.isPinned);
+    return [...pinned, ...unpinned];
+  }, [notes]);
+
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
-      <div className="flex h-16 items-center border-b border-white/10 px-5">
+      <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
         <h1 className="text-lg font-semibold tracking-tight">
           FocusNotes
         </h1>
+
+        {onToggleSidebar && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            title="Collapse Sidebar (Ctrl+B)"
+            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-white/5 hover:text-white"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 3.75h16.5a1.5 1.5 0 011.5 1.5v13.5a1.5 1.5 0 01-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V5.25a1.5 1.5 0 011.5-1.5zM9 3.75v16.5"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
       <div className="space-y-2 p-4">
@@ -62,7 +98,7 @@ const Sidebar = ({
         </p>
 
         <div className="space-y-1">
-          {notes.map((note) => (
+          {sortedNotes.map((note) => (
             <NoteItem
               key={note.id}
               note={note}
@@ -71,6 +107,8 @@ const Sidebar = ({
               onDelete={onDeleteNote}
               onRename={onRenameNote}
               onDuplicate={onDuplicateNote}
+              onTogglePin={onTogglePinNote}
+              onDownload={onDownloadNote}
             />
           ))}
         </div>

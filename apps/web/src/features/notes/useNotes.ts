@@ -74,7 +74,7 @@ const useNotes = () => {
 
   const updateNote = (
     id: string,
-    updates: Partial<Pick<Note, "title" | "content">>,
+    updates: Partial<Pick<Note, "title" | "content" | "isPinned">>,
   ) => {
     setNotes((currentNotes) =>
       currentNotes.map((note) => {
@@ -141,6 +141,15 @@ const useNotes = () => {
     }
   };
 
+  const togglePinNote = (id: string) => {
+    const targetNote = notes.find((note) => note.id === id);
+    if (!targetNote) {
+      return;
+    }
+
+    updateNote(id, { isPinned: !targetNote.isPinned });
+  };
+
   return {
     notes,
     activeNote,
@@ -150,6 +159,7 @@ const useNotes = () => {
     updateNote,
     deleteNote,
     duplicateNote,
+    togglePinNote,
     isLoading,
   };
 };

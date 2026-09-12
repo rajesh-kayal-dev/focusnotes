@@ -7,6 +7,7 @@ import SearchDialog from "../features/search/SearchDialog";
 
 const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { isFocusMode, toggleFocusMode } = useFocusMode(isSearchOpen);
 
   useEffect(() => {
@@ -17,6 +18,12 @@ const AppLayout = () => {
       ) {
         event.preventDefault();
         setIsSearchOpen(true);
+      } else if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "b"
+      ) {
+        event.preventDefault();
+        setIsSidebarOpen((open) => !open);
       }
     };
 
@@ -33,6 +40,7 @@ const AppLayout = () => {
     updateNote,
     deleteNote,
     duplicateNote,
+    togglePinNote,
     isLoading,
   } = useNotes();
 
@@ -46,7 +54,7 @@ const AppLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">
-      {!isFocusMode && (
+      {!isFocusMode && isSidebarOpen && (
         <Sidebar
           notes={notes}
           activeNoteId={activeNoteId}
@@ -56,6 +64,8 @@ const AppLayout = () => {
           onOpenSearch={() => setIsSearchOpen(true)}
           onRenameNote={(id, title) => updateNote(id, { title })}
           onDuplicateNote={duplicateNote}
+          onTogglePinNote={togglePinNote}
+          onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
         />
       )}
 
@@ -64,6 +74,8 @@ const AppLayout = () => {
         onUpdateNote={updateNote}
         isFocusMode={isFocusMode}
         onToggleFocus={toggleFocusMode}
+        onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
+        isSidebarOpen={isSidebarOpen}
       />
 
       <SearchDialog

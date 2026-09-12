@@ -4,4 +4,5 @@ export type Note = {
   content: string;
   createdAt: number;
   updatedAt: number;
+  isPinned?: boolean;
 };
