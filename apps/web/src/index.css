@@ -1,1 +1,108 @@
 @import "tailwindcss";
+
+.milkdown-container .milkdown .editor {
+  outline: none;
+  min-height: 500px;
+  color: #cbd5e1;
+}
+
+.milkdown-container .milkdown .editor p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+}
+
+.milkdown-container .milkdown .editor h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.milkdown-container .milkdown .editor h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.milkdown-container .milkdown .editor h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.milkdown-container .milkdown .editor ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.milkdown-container .milkdown .editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.milkdown-container .milkdown .editor li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.milkdown-container .milkdown .editor code {
+  background-color: #1e293b;
+  color: #38bdf8;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.milkdown-container .milkdown .editor pre {
+  background-color: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.milkdown-container .milkdown .editor pre code {
+  background-color: transparent;
+  padding: 0;
+  color: #e2e8f0;
+}
+
+.milkdown-container .milkdown .editor blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.milkdown-container .milkdown .editor a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.milkdown-container .milkdown .editor .task-list-item {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.milkdown-container .milkdown .editor input[type="checkbox"] {
+  accent-color: #3b82f6;
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
