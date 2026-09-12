@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainContent from "../components/MainContent";
 import Sidebar from "../components/Sidebar";
 import useFocusMode from "../features/focus/useFocusMode";
@@ -8,6 +8,21 @@ import SearchDialog from "../features/search/SearchDialog";
 const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { isFocusMode, toggleFocusMode } = useFocusMode(isSearchOpen);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key.toLowerCase() === "k"
+      ) {
+        event.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const {
     notes,
