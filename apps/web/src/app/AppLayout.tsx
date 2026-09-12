@@ -7,6 +7,8 @@ import useNotes from "../features/notes/useNotes";
 import usePWAInstall from "../features/pwa/usePWAInstall";
 import SearchDialog from "../features/search/SearchDialog";
 
+import useTheme from "../features/theme/useTheme";
+
 const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -15,6 +17,14 @@ const AppLayout = () => {
     useFocusMode(isSearchOpen);
   const { canInstall: canInstallPWA, installPWA: onInstallPWA } =
     usePWAInstall();
+  const {
+    themeMode,
+    cycleTheme,
+    brightness,
+    setBrightness,
+    isEyeCare,
+    toggleEyeCare,
+  } = useTheme();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -80,6 +90,12 @@ const AppLayout = () => {
           onOpenHowToUse={() => setIsHowToUseOpen(true)}
           canInstallPWA={canInstallPWA}
           onInstallPWA={onInstallPWA}
+          themeMode={themeMode}
+          onCycleTheme={cycleTheme}
+          brightness={brightness}
+          onBrightnessChange={setBrightness}
+          isEyeCare={isEyeCare}
+          onToggleEyeCare={toggleEyeCare}
         />
       )}
 

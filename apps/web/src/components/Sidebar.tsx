@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import focusNotesLogo from "../assets/FocousNotes.png";
 import focusNotesIcon from "../assets/FocusNotes-logo.png";
 import type { Note } from "../features/notes/types";
@@ -19,6 +19,12 @@ type SidebarProps = {
   onOpenHowToUse?: () => void;
   canInstallPWA?: boolean;
   onInstallPWA?: () => void;
+  themeMode?: "dark" | "light" | "auto";
+  onCycleTheme?: () => void;
+  brightness?: number;
+  onBrightnessChange?: (brightness: number) => void;
+  isEyeCare?: boolean;
+  onToggleEyeCare?: () => void;
 };
 
 const Sidebar = ({
@@ -36,17 +42,74 @@ const Sidebar = ({
   onOpenHowToUse,
   canInstallPWA,
   onInstallPWA,
+  themeMode = "dark",
+  onCycleTheme,
+  brightness = 100,
+  onBrightnessChange,
+  isEyeCare = false,
+  onToggleEyeCare,
 }: SidebarProps) => {
   const isMac =
     typeof navigator !== "undefined" &&
     /Mac|iPod|iPhone|iPad/.test(navigator.userAgent || "");
   const shortcutHint = isMac ? "⌘K" : "Ctrl+K";
 
+  const [isBrightnessOpen, setIsBrightnessOpen] = useState(false);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const themeContainerRef = useRef<HTMLDivElement | null>(null);
+
   const sortedNotes = useMemo(() => {
     const pinned = notes.filter((note) => Boolean(note.isPinned));
     const unpinned = notes.filter((note) => !note.isPinned);
     return [...pinned, ...unpinned];
   }, [notes]);
+
+  const handleThemeClick = () => {
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = null;
+    }
+
+    clickTimerRef.current = setTimeout(() => {
+      onCycleTheme?.();
+      clickTimerRef.current = null;
+    }, 220);
+  };
+
+  const handleThemeDoubleClick = () => {
+    if (clickTimerRef.current) {
+      clearTimeout(clickTimerRef.current);
+      clickTimerRef.current = null;
+    }
+    setIsBrightnessOpen((open) => !open);
+  };
+
+  useEffect(() => {
+    if (!isBrightnessOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsBrightnessOpen(false);
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        themeContainerRef.current &&
+        !themeContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsBrightnessOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isBrightnessOpen]);
 
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-zinc-900">
@@ -126,8 +189,8 @@ const Sidebar = ({
         </div>
       </div>
 
-      {(onOpenHowToUse || (canInstallPWA && onInstallPWA)) && (
-        <div className="border-t border-white/10 p-3 space-y-1">
+      <div className="relative flex items-center justify-between border-t border-white/10 p-3 gap-2">
+        <div className="flex-1 min-w-0 space-y-1">
           {canInstallPWA && onInstallPWA && (
             <button
               type="button"
@@ -166,7 +229,183 @@ const Sidebar = ({
             </button>
           )}
         </div>
-      )}
+
+        {onCycleTheme && (
+          <div ref={themeContainerRef} className="relative shrink-0">
+            {isBrightnessOpen && (
+              <div className="absolute bottom-10 right-0 z-50 w-56 rounded-xl border border-white/10 bg-zinc-900 p-3 shadow-xl space-y-3">
+                <div className="flex items-center justify-between text-xs text-zinc-400">
+                  <span className="font-medium">Display</span>
+                  <span className="font-mono text-zinc-200">{brightness}%</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onBrightnessChange?.(Math.max(40, brightness - 5))
+                    }
+                    disabled={brightness <= 40}
+                    title="Decrease brightness"
+                    aria-label="Decrease brightness"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-white/10 bg-white/5 text-zinc-400 transition hover:bg-white/10 hover:text-zinc-100 disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus:ring-1 focus:ring-white/20"
+                  >
+                    <svg
+                      className="h-3 w-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 12h-15"
+                      />
+                    </svg>
+                  </button>
+
+                  <input
+                    type="range"
+                    min={40}
+                    max={100}
+                    step={1}
+                    value={brightness}
+                    onChange={(e) =>
+                      onBrightnessChange?.(Number(e.target.value))
+                    }
+                    className="h-1.5 flex-1 cursor-pointer rounded-lg bg-zinc-700 accent-blue-500 focus:outline-none"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onBrightnessChange?.(Math.min(100, brightness + 5))
+                    }
+                    disabled={brightness >= 100}
+                    title="Increase brightness"
+                    aria-label="Increase brightness"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-white/10 bg-white/5 text-zinc-400 transition hover:bg-white/10 hover:text-zinc-100 disabled:pointer-events-none disabled:opacity-30 focus:outline-none focus:ring-1 focus:ring-white/20"
+                  >
+                    <svg
+                      className="h-3 w-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="border-t border-white/10 my-1" />
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+                    <svg
+                      className={`h-4 w-4 ${
+                        isEyeCare ? "text-amber-400" : "text-zinc-400"
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <span>Eye Care</span>
+                  </div>
+
+                  {onToggleEyeCare && (
+                    <button
+                      type="button"
+                      onClick={onToggleEyeCare}
+                      role="switch"
+                      aria-checked={isEyeCare}
+                      title={isEyeCare ? "Eye Care: Enabled" : "Eye Care: Disabled"}
+                      aria-label="Toggle Eye Care"
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-1 focus:ring-white/20 ${
+                        isEyeCare ? "bg-amber-500" : "bg-zinc-700"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                          isEyeCare ? "translate-x-4" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleThemeClick}
+              onDoubleClick={handleThemeDoubleClick}
+              title={`Theme: ${
+                themeMode === "dark"
+                  ? "Dark"
+                  : themeMode === "light"
+                    ? "Light"
+                    : "Auto (System)"
+              }`}
+              aria-label="Toggle theme"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 focus:outline-none"
+            >
+              {themeMode === "dark" && (
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+                  />
+                </svg>
+              )}
+              {themeMode === "light" && (
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25M4.284 12h-2.25m15.342-6.364l-1.591 1.591M6.759 17.241l-1.591 1.591m12.728 0l-1.591-1.591M6.759 6.759L5.168 5.168M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z"
+                  />
+                </svg>
+              )}
+              {themeMode === "auto" && (
+                <span className="flex h-4 w-4 select-none items-center justify-center text-xs font-bold leading-none">
+                  A
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
     </aside>
   );
 };

@@ -106,3 +106,128 @@
   height: 1.1rem;
   cursor: pointer;
 }
+
+/* Light Theme Overrides (Warm Ivory/Paper Reading Theme) */
+html.light {
+  color-scheme: light;
+}
+
+html.light body,
+html.light .bg-zinc-950 {
+  background-color: #F7F5EF !important;
+  color: #252525 !important;
+}
+
+html.light .bg-zinc-900 {
+  background-color: #F7F5EF !important;
+}
+
+html.light .bg-zinc-800 {
+  background-color: #FCFBF7 !important;
+}
+
+html.light section {
+  background-color: #FCFBF7 !important;
+}
+
+html.light .text-zinc-100 {
+  color: #252525 !important;
+}
+
+html.light .text-zinc-200 {
+  color: #252525 !important;
+}
+
+html.light .text-zinc-300 {
+  color: #4A4A4A !important;
+}
+
+html.light .text-zinc-400 {
+  color: #6B6B6B !important;
+}
+
+html.light .text-zinc-500 {
+  color: #8C8C8C !important;
+}
+
+html.light .border-white\/10 {
+  border-color: #E5E1D8 !important;
+}
+
+html.light .border-white\/5 {
+  border-color: #E5E1D8 !important;
+}
+
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light .bg-white\/15 {
+  background-color: rgba(0, 0, 0, 0.09) !important;
+}
+
+html.light .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+html.light .hover\:bg-white\/15:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .hover\:text-zinc-100:hover {
+  color: #252525 !important;
+}
+
+html.light .milkdown-container .milkdown .editor {
+  color: #252525 !important;
+}
+
+html.light .milkdown-container .milkdown .editor h1 {
+  color: #252525 !important;
+}
+
+html.light .milkdown-container .milkdown .editor h2,
+html.light .milkdown-container .milkdown .editor h3 {
+  color: #252525 !important;
+}
+
+html.light .milkdown-container .milkdown .editor code {
+  background-color: #E5E1D8 !important;
+  color: #1D4ED8 !important;
+}
+
+html.light .milkdown-container .milkdown .editor pre {
+  background-color: #F7F5EF !important;
+  border-color: #E5E1D8 !important;
+}
+
+html.light .milkdown-container .milkdown .editor pre code {
+  color: #252525 !important;
+}
+
+html.light .milkdown-container .milkdown .editor blockquote {
+  color: #6B6B6B !important;
+  border-left-color: #3B82F6 !important;
+}
+
+/* Eye Care Warm Reading Mode Overlay */
+html.eyecare::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+html.light.eyecare::after {
+  background-color: rgba(245, 158, 11, 0.1);
+}
