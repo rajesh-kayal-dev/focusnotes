@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Note } from "./types";
 
 type NoteItemProps = {
@@ -6,6 +6,7 @@ type NoteItemProps = {
   isActive: boolean;
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onRename?: (id: string, newTitle: string) => void;
 };
 
 const NoteItem = ({
@@ -13,8 +14,45 @@ const NoteItem = ({
   isActive,
   onSelect,
   onDelete,
+  onRename,
 }: NoteItemProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [prevTitle, setPrevTitle] = useState(note.title);
+  const [titleInput, setTitleInput] = useState(note.title);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  if (note.title !== prevTitle) {
+    setPrevTitle(note.title);
+    setTitleInput(note.title);
+  }
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditing]);
+
+  const handleSave = () => {
+    setIsEditing(false);
+    const trimmed = titleInput.trim();
+    const finalTitle = trimmed || note.title;
+    setTitleInput(finalTitle);
+
+    if (finalTitle !== note.title && onRename) {
+      onRename(note.id, finalTitle);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSave();
+    } else if (event.key === "Escape") {
+      setTitleInput(note.title);
+      setIsEditing(false);
+    }
+  };
 
   return (
     <div
@@ -24,13 +62,25 @@ const NoteItem = ({
           : "text-slate-400 hover:bg-white/5 hover:text-white"
       }`}
     >
-      <button
-        type="button"
-        onClick={() => onSelect(note.id)}
-        className="min-w-0 flex-1 truncate text-left"
-      >
-        {note.title}
-      </button>
+      {isEditing ? (
+        <input
+          ref={inputRef}
+          type="text"
+          value={titleInput}
+          onChange={(event) => setTitleInput(event.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyDown}
+          className="min-w-0 flex-1 rounded bg-slate-800 px-2 py-0.5 text-sm text-white outline-none ring-1 ring-white/20"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => onSelect(note.id)}
+          className="min-w-0 flex-1 truncate text-left"
+        >
+          {note.title}
+        </button>
+      )}
 
       <button
         type="button"
@@ -46,6 +96,7 @@ const NoteItem = ({
             type="button"
             onClick={() => {
               setIsMenuOpen(false);
+              setIsEditing(true);
             }}
             className="w-full rounded-md px-3 py-2 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
           >

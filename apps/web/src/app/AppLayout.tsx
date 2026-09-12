@@ -38,6 +38,7 @@ const AppLayout = () => {
           onAddNote={addNote}
           onDeleteNote={deleteNote}
           onOpenSearch={() => setIsSearchOpen(true)}
+          onRenameNote={(id, title) => updateNote(id, { title })}
         />
       )}
 

@@ -8,6 +8,7 @@ type SidebarProps = {
   onAddNote: () => void;
   onDeleteNote: (id: string) => void;
   onOpenSearch: () => void;
+  onRenameNote?: (id: string, title: string) => void;
 };
 
 const Sidebar = ({
@@ -17,6 +18,7 @@ const Sidebar = ({
   onAddNote,
   onDeleteNote,
   onOpenSearch,
+  onRenameNote,
 }: SidebarProps) => {
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
@@ -57,6 +59,7 @@ const Sidebar = ({
               isActive={note.id === activeNoteId}
               onSelect={onSelectNote}
               onDelete={onDeleteNote}
+              onRename={onRenameNote}
             />
           ))}
         </div>
