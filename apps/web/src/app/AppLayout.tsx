@@ -1,8 +1,12 @@
+import { useState } from "react";
 import MainContent from "../components/MainContent";
 import Sidebar from "../components/Sidebar";
 import useNotes from "../features/notes/useNotes";
+import SearchDialog from "../features/search/SearchDialog";
 
 const AppLayout = () => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const {
     notes,
     activeNote,
@@ -30,11 +34,19 @@ const AppLayout = () => {
         onSelectNote={setActiveNoteId}
         onAddNote={addNote}
         onDeleteNote={deleteNote}
+        onOpenSearch={() => setIsSearchOpen(true)}
       />
 
       <MainContent
         note={activeNote}
         onUpdateNote={updateNote}
+      />
+
+      <SearchDialog
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        notes={notes}
+        onSelectNote={setActiveNoteId}
       />
     </div>
   );

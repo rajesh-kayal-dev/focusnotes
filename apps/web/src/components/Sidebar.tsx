@@ -7,6 +7,7 @@ type SidebarProps = {
   onSelectNote: (id: string) => void;
   onAddNote: () => void;
   onDeleteNote: (id: string) => void;
+  onOpenSearch: () => void;
 };
 
 const Sidebar = ({
@@ -15,6 +16,7 @@ const Sidebar = ({
   onSelectNote,
   onAddNote,
   onDeleteNote,
+  onOpenSearch,
 }: SidebarProps) => {
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
@@ -27,6 +29,7 @@ const Sidebar = ({
       <div className="space-y-2 p-4">
         <button
           type="button"
+          onClick={onOpenSearch}
           className="w-full rounded-lg border border-white/10 px-4 py-2 text-left text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
         >
           Search
