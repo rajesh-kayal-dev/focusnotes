@@ -25,11 +25,11 @@ const MainContent = ({
   return (
     <main className="flex h-screen flex-1 flex-col">
       {isFocusMode ? (
-        <div className="flex h-12 items-center justify-end border-b border-white/5 bg-slate-950 px-8">
+        <div className="flex h-12 items-center justify-end border-b border-white/5 bg-zinc-950 px-8">
           <button
             type="button"
             onClick={onToggleFocus}
-            className="rounded-lg border border-white/10 px-3 py-1 text-xs text-slate-400 transition hover:bg-white/5 hover:text-white"
+            className="rounded-lg border border-white/10 px-3 py-1 text-xs text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100"
           >
             Exit · Esc
           </button>

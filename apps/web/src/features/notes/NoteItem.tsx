@@ -102,8 +102,8 @@ const NoteItem = ({
     <div
       className={`group relative flex items-center justify-between rounded-lg px-3 py-2 text-sm transition ${
         isActive
-          ? "bg-white/10 text-white"
-          : "text-slate-400 hover:bg-white/5 hover:text-white"
+          ? "bg-white/10 text-zinc-100"
+          : "text-zinc-400 hover:bg-white/5 hover:text-zinc-100"
       }`}
     >
       {isEditing ? (
@@ -114,7 +114,7 @@ const NoteItem = ({
           onChange={(event) => setTitleInput(event.target.value)}
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
-          className="min-w-0 flex-1 rounded bg-slate-800 px-2 py-0.5 text-sm text-white outline-none ring-1 ring-white/20"
+          className="min-w-0 flex-1 rounded bg-zinc-800 px-2 py-0.5 text-sm text-zinc-100 outline-none ring-1 ring-white/20"
         />
       ) : (
         <button
@@ -125,7 +125,7 @@ const NoteItem = ({
           {note.isPinned && (
             <svg
               aria-label="Pinned note"
-              className="h-3.5 w-3.5 shrink-0 text-slate-400"
+              className="h-3.5 w-3.5 shrink-0 text-zinc-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -145,18 +145,18 @@ const NoteItem = ({
       <button
         type="button"
         onClick={() => setIsMenuOpen((open) => !open)}
-        className="rounded-md px-2 py-1 text-slate-500 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-white"
+        className="rounded-md px-2 py-1 text-zinc-500 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-zinc-100"
       >
         ...
       </button>
 
       {isMenuOpen && (
-        <div className="absolute right-2 top-10 z-10 w-48 rounded-lg border border-white/10 bg-slate-900 p-1 shadow-xl">
+        <div className="absolute right-2 top-10 z-10 w-48 rounded-lg border border-white/10 bg-zinc-900 p-1 shadow-xl">
           {/* Share */}
           <button
             type="button"
             onClick={handleShare}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
           >
             <svg
               className="h-4 w-4 shrink-0"
@@ -181,7 +181,7 @@ const NoteItem = ({
               setIsMenuOpen(false);
               setIsEditing(true);
             }}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
           >
             <svg
               className="h-4 w-4 shrink-0"
@@ -210,7 +210,7 @@ const NoteItem = ({
                 onTogglePin(note.id);
               }
             }}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
           >
             <svg
               className="h-4 w-4 shrink-0"
@@ -237,7 +237,7 @@ const NoteItem = ({
                 onDuplicate(note.id);
               }
             }}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
           >
             <svg
               className="h-4 w-4 shrink-0"
@@ -259,7 +259,7 @@ const NoteItem = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-slate-300 hover:bg-white/5 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
           >
             <svg
               className="h-4 w-4 shrink-0"
