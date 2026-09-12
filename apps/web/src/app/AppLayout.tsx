@@ -32,6 +32,7 @@ const AppLayout = () => {
     addNote,
     updateNote,
     deleteNote,
+    duplicateNote,
     isLoading,
   } = useNotes();
 
@@ -54,6 +55,7 @@ const AppLayout = () => {
           onDeleteNote={deleteNote}
           onOpenSearch={() => setIsSearchOpen(true)}
           onRenameNote={(id, title) => updateNote(id, { title })}
+          onDuplicateNote={duplicateNote}
         />
       )}
 

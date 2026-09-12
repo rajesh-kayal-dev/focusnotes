@@ -117,6 +117,30 @@ const useNotes = () => {
     }
   };
 
+  const duplicateNote = async (id: string) => {
+    const targetNote = notes.find((note) => note.id === id);
+    if (!targetNote) {
+      return;
+    }
+
+    const now = Date.now();
+    const duplicate: Note = {
+      id: crypto.randomUUID(),
+      title: `${targetNote.title} (Copy)`,
+      content: targetNote.content,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    try {
+      await saveNote(duplicate);
+      setNotes((currentNotes) => [duplicate, ...currentNotes]);
+      setActiveNoteId(duplicate.id);
+    } catch (error) {
+      console.error("Failed to duplicate note:", error);
+    }
+  };
+
   return {
     notes,
     activeNote,
@@ -125,6 +149,7 @@ const useNotes = () => {
     addNote,
     updateNote,
     deleteNote,
+    duplicateNote,
     isLoading,
   };
 };
