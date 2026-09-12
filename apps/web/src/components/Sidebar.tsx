@@ -1,6 +1,21 @@
-import NoteItem from "../features/notes/NoteItem"
+import type { Note } from "../features/notes/types";
+import NoteItem from "../features/notes/NoteItem";
 
-const Sidebar = () => {
+type SidebarProps = {
+  notes: Note[];
+  activeNoteId: string | null;
+  onSelectNote: (id: string) => void;
+  onAddNote: () => void;
+  onDeleteNote: (id: string) => void;
+};
+
+const Sidebar = ({
+  notes,
+  activeNoteId,
+  onSelectNote,
+  onAddNote,
+  onDeleteNote,
+}: SidebarProps) => {
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-slate-950">
       <div className="flex h-16 items-center border-b border-white/10 px-5">
@@ -19,6 +34,7 @@ const Sidebar = () => {
 
         <button
           type="button"
+          onClick={onAddNote}
           className="w-full rounded-lg bg-white/10 px-4 py-2 text-left text-sm text-white transition hover:bg-white/15"
         >
           + New Note
@@ -30,7 +46,17 @@ const Sidebar = () => {
           Today
         </p>
 
-        <NoteItem />
+        <div className="space-y-1">
+          {notes.map((note) => (
+            <NoteItem
+              key={note.id}
+              note={note}
+              isActive={note.id === activeNoteId}
+              onSelect={onSelectNote}
+              onDelete={onDeleteNote}
+            />
+          ))}
+        </div>
       </div>
     </aside>
   );

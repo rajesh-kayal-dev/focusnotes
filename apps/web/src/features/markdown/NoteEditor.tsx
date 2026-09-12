@@ -1,24 +1,49 @@
-const NoteEditor = () => {
+import type { Note } from "../notes/types";
+
+type NoteEditorProps = {
+  note: Note | undefined;
+  onUpdateNote: (
+    id: string,
+    updates: Partial<Pick<Note, "title" | "content">>,
+  ) => void;
+};
+
+const NoteEditor = ({
+  note,
+  onUpdateNote,
+}: NoteEditorProps) => {
+  if (!note) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center text-slate-500">
+        Select a note to start writing.
+      </div>
+    );
+  }
+
   return (
     <article className="min-h-full outline-none">
-      <h1 className="text-4xl font-semibold tracking-tight text-white">
-        Untitled Note
-      </h1>
+      <input
+        type="text"
+        value={note.title}
+        onChange={(event) =>
+          onUpdateNote(note.id, {
+            title: event.target.value,
+          })
+        }
+        className="w-full bg-transparent text-4xl font-semibold tracking-tight text-white outline-none placeholder:text-slate-600"
+        placeholder="Untitled Note"
+      />
 
-      <div className="mt-8 space-y-5 text-[16px] leading-8 text-slate-300">
-        <p>
-          Start writing or paste something here...
-        </p>
-
-        <h2 className="text-2xl font-semibold text-white">
-          Your content
-        </h2>
-
-        <p>
-          FocusNotes is designed to turn messy information into
-          focused reading.
-        </p>
-      </div>
+      <textarea
+        value={note.content}
+        onChange={(event) =>
+          onUpdateNote(note.id, {
+            content: event.target.value,
+          })
+        }
+        className="mt-8 min-h-[500px] w-full resize-none bg-transparent text-[16px] leading-8 text-slate-300 outline-none placeholder:text-slate-600"
+        placeholder="Start writing or paste something here..."
+      />
     </article>
   );
 };
