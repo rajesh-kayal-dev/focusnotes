@@ -11,7 +11,8 @@ const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
-  const { isFocusMode, toggleFocusMode } = useFocusMode(isSearchOpen);
+  const { isFocusMode, isFullscreen, toggleFocusMode, toggleFullscreen } =
+    useFocusMode(isSearchOpen);
   const { canInstall: canInstallPWA, installPWA: onInstallPWA } =
     usePWAInstall();
 
@@ -89,6 +90,8 @@ const AppLayout = () => {
         onToggleFocus={toggleFocusMode}
         onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
         isSidebarOpen={isSidebarOpen}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={toggleFullscreen}
       />
 
       <SearchDialog
