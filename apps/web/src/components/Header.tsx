@@ -2,9 +2,10 @@ import type { Note } from "../features/notes/types";
 
 type HeaderProps = {
   note: Note | undefined;
+  onToggleFocus?: () => void;
 };
 
-const Header = ({ note }: HeaderProps) => {
+const Header = ({ note, onToggleFocus }: HeaderProps) => {
   return (
     <header className="flex h-16 items-center justify-between border-b border-white/10 px-8">
       <h2 className="truncate text-sm font-medium text-slate-300">
@@ -14,6 +15,7 @@ const Header = ({ note }: HeaderProps) => {
       <div className="flex items-center gap-2">
         <button
           type="button"
+          onClick={onToggleFocus}
           className="rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
         >
           Focus
