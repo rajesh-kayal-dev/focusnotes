@@ -1,4 +1,6 @@
+import { MilkdownProvider } from "@milkdown/react";
 import type { Note } from "../notes/types";
+import MilkdownEditor from "./MilkdownEditor";
 
 type NoteEditorProps = {
   note: Note | undefined;
@@ -8,10 +10,7 @@ type NoteEditorProps = {
   ) => void;
 };
 
-const NoteEditor = ({
-  note,
-  onUpdateNote,
-}: NoteEditorProps) => {
+const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
   if (!note) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center text-slate-500">
@@ -34,16 +33,14 @@ const NoteEditor = ({
         placeholder="Untitled Note"
       />
 
-      <textarea
-        value={note.content}
-        onChange={(event) =>
-          onUpdateNote(note.id, {
-            content: event.target.value,
-          })
-        }
-        className="mt-8 min-h-[500px] w-full resize-none bg-transparent text-[16px] leading-8 text-slate-300 outline-none placeholder:text-slate-600"
-        placeholder="Start writing or paste something here..."
-      />
+      <MilkdownProvider key={note.id}>
+        <MilkdownEditor
+          content={note.content}
+          onChange={(newContent) =>
+            onUpdateNote(note.id, { content: newContent })
+          }
+        />
+      </MilkdownProvider>
     </article>
   );
 };
