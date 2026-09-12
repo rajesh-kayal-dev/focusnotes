@@ -8,6 +8,8 @@ import usePWAInstall from "../features/pwa/usePWAInstall";
 import SearchDialog from "../features/search/SearchDialog";
 
 import useTheme from "../features/theme/useTheme";
+import usePageZoom from "../features/zoom/usePageZoom";
+import PageZoomControl from "../components/PageZoomControl";
 
 const AppLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -25,6 +27,14 @@ const AppLayout = () => {
     isEyeCare,
     toggleEyeCare,
   } = useTheme();
+  const {
+    zoom,
+    zoomIn,
+    zoomOut,
+    resetZoom,
+    minZoom,
+    maxZoom,
+  } = usePageZoom();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -108,6 +118,7 @@ const AppLayout = () => {
         isSidebarOpen={isSidebarOpen}
         isFullscreen={isFullscreen}
         onToggleFullscreen={toggleFullscreen}
+        zoom={zoom}
       />
 
       <SearchDialog
@@ -120,6 +131,15 @@ const AppLayout = () => {
       <HowToUseDialog
         isOpen={isHowToUseOpen}
         onClose={() => setIsHowToUseOpen(false)}
+      />
+
+      <PageZoomControl
+        zoom={zoom}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
+        onResetZoom={resetZoom}
+        minZoom={minZoom}
+        maxZoom={maxZoom}
       />
     </div>
   );

@@ -4,73 +4,103 @@
   outline: none;
   min-height: 500px;
   color: #d4d4d8;
+  caret-color: #3b82f6;
+  font-size: calc(20px * var(--note-zoom, 1));
+  line-height: 1.6;
 }
 
 .milkdown-container .milkdown .editor p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.75;
+  font-size: calc(20px * var(--note-zoom, 1));
+  margin-top: calc(0.45rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.45rem * var(--note-zoom, 1));
+  line-height: 1.6;
+}
+
+.milkdown-container .milkdown .editor strong,
+.milkdown-container .milkdown .editor b {
+  font-weight: 600;
+  color: #f4f4f5;
+}
+
+/* Standalone subheading paragraphs like "Answer:", "Analogy:" */
+.milkdown-container .milkdown .editor p:has(> strong:only-child),
+.milkdown-container .milkdown .editor p:has(> b:only-child) {
+  font-size: calc(21px * var(--note-zoom, 1));
+  font-weight: 600;
+  color: #f4f4f5;
+  margin-top: calc(1.35rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.25rem * var(--note-zoom, 1));
+  line-height: 1.4;
 }
 
 .milkdown-container .milkdown .editor h1 {
-  font-size: 2.25rem;
+  font-size: calc(40px * var(--note-zoom, 1));
   font-weight: 700;
   color: #f4f4f5;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  margin-top: calc(2.75rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.75rem * var(--note-zoom, 1));
+  line-height: 1.2;
 }
 
 .milkdown-container .milkdown .editor h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #e4e4e7;
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
+  font-size: calc(35px * var(--note-zoom, 1));
+  font-weight: 700;
+  color: #f4f4f5;
+  margin-top: calc(2.75rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.75rem * var(--note-zoom, 1));
+  line-height: 1.25;
 }
 
 .milkdown-container .milkdown .editor h3 {
-  font-size: 1.35rem;
+  font-size: calc(21px * var(--note-zoom, 1));
   font-weight: 600;
-  color: #e4e4e7;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  color: #f4f4f5;
+  margin-top: calc(1.35rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.25rem * var(--note-zoom, 1));
+  line-height: 1.4;
 }
 
 .milkdown-container .milkdown .editor ul {
   list-style-type: disc;
-  padding-left: 1.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding-left: calc(1.75rem * var(--note-zoom, 1));
+  margin-top: calc(0.5rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.5rem * var(--note-zoom, 1));
+  font-size: calc(20px * var(--note-zoom, 1));
+  line-height: 1.6;
 }
 
 .milkdown-container .milkdown .editor ol {
   list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding-left: calc(1.75rem * var(--note-zoom, 1));
+  margin-top: calc(0.5rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.5rem * var(--note-zoom, 1));
+  font-size: calc(20px * var(--note-zoom, 1));
+  line-height: 1.6;
 }
 
 .milkdown-container .milkdown .editor li {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
+  margin-top: calc(0.25rem * var(--note-zoom, 1));
+  margin-bottom: calc(0.25rem * var(--note-zoom, 1));
 }
 
 .milkdown-container .milkdown .editor code {
   background-color: #27272a;
   color: #60a5fa;
-  padding: 0.2rem 0.4rem;
-  border-radius: 0.25rem;
-  font-size: 0.9em;
+  padding: calc(0.2rem * var(--note-zoom, 1)) calc(0.45rem * var(--note-zoom, 1));
+  border-radius: calc(0.3rem * var(--note-zoom, 1));
+  font-size: calc(17px * var(--note-zoom, 1));
 }
 
 .milkdown-container .milkdown .editor pre {
   background-color: #18181b;
   border: 1px solid #27272a;
   border-radius: 0.5rem;
-  padding: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  padding: calc(1.1rem * var(--note-zoom, 1)) calc(1.35rem * var(--note-zoom, 1));
+  margin-top: calc(1.5rem * var(--note-zoom, 1));
+  margin-bottom: calc(1.5rem * var(--note-zoom, 1));
   overflow-x: auto;
+  font-size: calc(16px * var(--note-zoom, 1));
+  line-height: 1.6;
 }
 
 .milkdown-container .milkdown .editor pre code {
@@ -80,12 +110,16 @@
 }
 
 .milkdown-container .milkdown .editor blockquote {
-  border-left: 4px solid #3b82f6;
-  padding-left: 1rem;
+  border-left: calc(3px * var(--note-zoom, 1)) solid #3b82f6;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: calc(0.85rem * var(--note-zoom, 1)) calc(1.25rem * var(--note-zoom, 1));
   color: #a1a1aa;
-  font-style: italic;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  font-style: normal;
+  font-size: calc(20px * var(--note-zoom, 1));
+  margin-top: calc(1.5rem * var(--note-zoom, 1));
+  margin-bottom: calc(1.5rem * var(--note-zoom, 1));
+  line-height: 1.6;
 }
 
 .milkdown-container .milkdown .editor a {
@@ -102,9 +136,29 @@
 
 .milkdown-container .milkdown .editor input[type="checkbox"] {
   accent-color: #3b82f6;
-  width: 1.1rem;
-  height: 1.1rem;
+  width: calc(1.1rem * var(--note-zoom, 1));
+  height: calc(1.1rem * var(--note-zoom, 1));
   cursor: pointer;
+}
+
+/* Empty Note Placeholder */
+.milkdown-container .milkdown .editor > p:only-child:is(:empty, :has(br:only-child))::before,
+.milkdown-container .milkdown .editor p.is-empty:first-child::before,
+.milkdown-container .milkdown .editor:empty::before {
+  content: "Start writing...";
+  color: #71717a;
+  pointer-events: none;
+  float: left;
+  height: 0;
+  opacity: 0.7;
+  font-size: calc(20px * var(--note-zoom, 1));
+  line-height: 1.6;
+}
+
+html.light .milkdown-container .milkdown .editor > p:only-child:is(:empty, :has(br:only-child))::before,
+html.light .milkdown-container .milkdown .editor p.is-empty:first-child::before,
+html.light .milkdown-container .milkdown .editor:empty::before {
+  color: #8c8c8c;
 }
 
 /* Light Theme Overrides (Warm Ivory/Paper Reading Theme) */
@@ -199,6 +253,11 @@ html.light .milkdown-container .milkdown .editor h3 {
   color: #252525 !important;
 }
 
+html.light .milkdown-container .milkdown .editor strong,
+html.light .milkdown-container .milkdown .editor b {
+  color: #111111 !important;
+}
+
 html.light .milkdown-container .milkdown .editor code {
   background-color: #E5E1D8 !important;
   color: #1D4ED8 !important;
@@ -214,8 +273,37 @@ html.light .milkdown-container .milkdown .editor pre code {
 }
 
 html.light .milkdown-container .milkdown .editor blockquote {
-  color: #6B6B6B !important;
+  background-color: rgba(0, 0, 0, 0.03) !important;
+  color: #4A4A4A !important;
   border-left-color: #3B82F6 !important;
+}
+
+html.light input::placeholder {
+  color: #8C8C8C !important;
+}
+
+/* Page Zoom Control light theme styling */
+html.light aside[aria-label="Page Zoom"] {
+  background-color: rgba(252, 251, 247, 0.95) !important;
+  border-color: #E5E1D8 !important;
+  color: #252525 !important;
+}
+
+html.light aside[aria-label="Page Zoom"] svg {
+  color: #6B6B6B !important;
+}
+
+html.light aside[aria-label="Page Zoom"] span {
+  color: #252525 !important;
+}
+
+html.light aside[aria-label="Page Zoom"] button {
+  color: #6B6B6B !important;
+}
+
+html.light aside[aria-label="Page Zoom"] button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: #252525 !important;
 }
 
 /* Eye Care Warm Reading Mode Overlay */
