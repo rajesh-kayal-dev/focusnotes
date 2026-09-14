@@ -1,5 +1,7 @@
+﻿import { useRef } from "react";
 import Header from "./Header";
 import NoteEditor from "../features/markdown/NoteEditor";
+import DocumentOutline from "./DocumentOutline";
 import type { Note } from "../features/notes/types";
 
 type MainContentProps = {
@@ -15,6 +17,15 @@ type MainContentProps = {
   isFullscreen?: boolean;
   onToggleFullscreen?: () => void;
   zoom?: number;
+  notes?: Note[];
+  openTabIds?: string[];
+  onSelectTab?: (id: string) => void;
+  onCloseTab?: (id: string, e?: React.MouseEvent) => void;
+  onAddNote?: () => void;
+  onOpenSettings?: () => void;
+  isDND?: boolean;
+  onToggleDND?: (enabled: boolean) => void;
+  isFullWidth?: boolean;
 };
 
 const MainContent = ({
@@ -27,16 +38,27 @@ const MainContent = ({
   isFullscreen = false,
   onToggleFullscreen,
   zoom = 100,
+  notes = [],
+  openTabIds = [],
+  onSelectTab,
+  onCloseTab,
+  onAddNote,
+  onOpenSettings,
+  isDND,
+  onToggleDND,
+  isFullWidth = false,
 }: MainContentProps) => {
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
+
   return (
-    <main className="flex h-screen flex-1 flex-col">
+    <main className={`relative flex h-screen min-w-0 flex-1 flex-col max-md:overflow-hidden ${isSidebarOpen ? "max-md:ml-64 max-md:w-[calc(100%-16rem)] max-md:flex-none" : ""}`}>
       {isFocusMode ? (
-        <div className="flex h-12 items-center justify-end gap-3 border-b border-white/5 bg-zinc-950 px-8">
+        <div className="absolute top-4 right-6 z-20 flex items-center gap-2.5">
           {onToggleFullscreen && (
             <button
               type="button"
               onClick={onToggleFullscreen}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1 text-xs text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100"
+              className="focus-floating-btn flex items-center gap-1.5 rounded-lg border border-white/10 bg-zinc-900/80 backdrop-blur-sm px-3 py-1.5 text-xs text-zinc-400 shadow-sm transition hover:bg-white/10 hover:text-zinc-100"
             >
               {isFullscreen ? (
                 <>
@@ -78,7 +100,7 @@ const MainContent = ({
           <button
             type="button"
             onClick={onToggleFocus}
-            className="flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1 text-xs text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100"
+            className="focus-floating-btn flex items-center gap-1.5 rounded-lg border border-white/10 bg-zinc-900/80 backdrop-blur-sm px-3 py-1.5 text-xs text-zinc-400 shadow-sm transition hover:bg-white/10 hover:text-zinc-100"
           >
             <svg
               className="h-3.5 w-3.5"
@@ -93,7 +115,7 @@ const MainContent = ({
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-            <span>Exit · Esc</span>
+            <span>Exit Â· Esc</span>
           </button>
         </div>
       ) : (
@@ -102,24 +124,41 @@ const MainContent = ({
           onToggleFocus={onToggleFocus}
           onToggleSidebar={onToggleSidebar}
           isSidebarOpen={isSidebarOpen}
+          notes={notes}
+          openTabIds={openTabIds}
+          activeTabId={note?.id ?? null}
+          onSelectTab={onSelectTab}
+          onCloseTab={onCloseTab}
+          onAddNote={onAddNote}
+          onOpenSettings={onOpenSettings}
+          isDND={isDND}
+          onToggleDND={onToggleDND}
         />
       )}
 
-      <section className="flex-1 overflow-y-auto">
+      <section ref={scrollContainerRef} className="min-w-0 flex-1 overflow-y-auto">
         <div
-          className="mx-auto w-full px-6 pt-10 pb-24 md:px-12 md:pt-12 md:pb-32"
+          className={`mx-auto w-full pt-10 pb-24 md:pt-12 md:pb-32 ${isFullWidth ? "px-4 md:px-6" : "px-6 md:px-12"}`}
           style={
-            {
-              maxWidth: `calc(1040px * var(--note-zoom, 1))`,
-              "--note-zoom": (zoom ?? 100) / 100,
-            } as React.CSSProperties
+            isFullWidth
+              ? { "--note-zoom": (zoom ?? 100) / 100 } as React.CSSProperties
+              : {
+                  maxWidth: `calc(1040px * var(--note-zoom, 1))`,
+                  "--note-zoom": (zoom ?? 100) / 100,
+                } as React.CSSProperties
           }
         >
           <NoteEditor note={note} onUpdateNote={onUpdateNote} />
         </div>
       </section>
+
+      <DocumentOutline
+        scrollContainerRef={scrollContainerRef}
+        content={note?.content}
+      />
     </main>
   );
 };
 
 export default MainContent;
+

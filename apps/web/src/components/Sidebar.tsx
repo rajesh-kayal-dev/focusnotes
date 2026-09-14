@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import focusNotesLogo from "../assets/FocousNotes.png";
 import focusNotesIcon from "../assets/FocusNotes-logo.png";
 import type { Note } from "../features/notes/types";
@@ -21,6 +21,7 @@ type SidebarProps = {
   onInstallPWA?: () => void;
   themeMode?: "dark" | "light" | "auto";
   onCycleTheme?: () => void;
+  onSetTheme?: (mode: "dark" | "light" | "auto") => void;
   brightness?: number;
   onBrightnessChange?: (brightness: number) => void;
   isEyeCare?: boolean;
@@ -44,6 +45,7 @@ const Sidebar = ({
   onInstallPWA,
   themeMode = "dark",
   onCycleTheme,
+  onSetTheme,
   brightness = 100,
   onBrightnessChange,
   isEyeCare = false,
@@ -52,7 +54,7 @@ const Sidebar = ({
   const isMac =
     typeof navigator !== "undefined" &&
     /Mac|iPod|iPhone|iPad/.test(navigator.userAgent || "");
-  const shortcutHint = isMac ? "⌘K" : "Ctrl+K";
+  const shortcutHint = isMac ? "âŒ˜K" : "Ctrl+K";
 
   const [isBrightnessOpen, setIsBrightnessOpen] = useState(false);
   const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -112,7 +114,7 @@ const Sidebar = ({
   }, [isBrightnessOpen]);
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-zinc-900">
+    <aside className="relative z-50 flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-zinc-900 max-md:fixed max-md:inset-y-0 max-md:left-0">
       <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
         <div className="flex items-center">
           <img
@@ -305,6 +307,82 @@ const Sidebar = ({
 
                 <div className="border-t border-white/10 my-1" />
 
+                <div className="space-y-1.5">
+                  <div className="text-xs font-medium text-zinc-400">Theme</div>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => onSetTheme?.("dark")}
+                      title="Dark Mode (Moon)"
+                      aria-label="Dark Mode"
+                      className={`flex flex-1 items-center justify-center gap-1 rounded-lg border py-1.5 text-xs transition focus:outline-none ${
+                        themeMode === "dark"
+                          ? "border-blue-500 bg-blue-500/15 text-blue-400 font-medium shadow-xs"
+                          : "border-white/15 bg-white/5 text-zinc-400 hover:border-white/30 hover:bg-white/10 hover:text-zinc-200"
+                      }`}
+                    >
+                      <svg
+                        className="h-3.5 w-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
+                        />
+                      </svg>
+                      <span>Dark</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onSetTheme?.("light")}
+                      title="Light Mode (Sun)"
+                      aria-label="Light Mode"
+                      className={`flex flex-1 items-center justify-center gap-1 rounded-lg border py-1.5 text-xs transition focus:outline-none ${
+                        themeMode === "light"
+                          ? "border-blue-500 bg-blue-500/15 text-blue-400 font-medium shadow-xs"
+                          : "border-white/15 bg-white/5 text-zinc-400 hover:border-white/30 hover:bg-white/10 hover:text-zinc-200"
+                      }`}
+                    >
+                      <svg
+                        className="h-3.5 w-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25M4.284 12h-2.25m15.342-6.364l-1.591 1.591M6.759 17.241l-1.591 1.591m12.728 0l-1.591-1.591M6.759 6.759L5.168 5.168M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z"
+                        />
+                      </svg>
+                      <span>Light</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onSetTheme?.("auto")}
+                      title="Auto / System Mode"
+                      aria-label="Auto Mode"
+                      className={`flex flex-1 items-center justify-center gap-1 rounded-lg border py-1.5 text-xs transition focus:outline-none ${
+                        themeMode === "auto"
+                          ? "border-blue-500 bg-blue-500/15 text-blue-400 font-medium shadow-xs"
+                          : "border-white/15 bg-white/5 text-zinc-400 hover:border-white/30 hover:bg-white/10 hover:text-zinc-200"
+                      }`}
+                    >
+                      <span className="text-xs font-bold leading-none">A</span>
+                      <span>Auto</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 my-1" />
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs text-zinc-300">
                     <svg
@@ -365,7 +443,7 @@ const Sidebar = ({
                     : "Auto (System)"
               }`}
               aria-label="Toggle theme"
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/5 hover:text-zinc-100 focus:outline-none"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-zinc-400 transition hover:bg-white/10 hover:text-zinc-100 focus:outline-none shadow-xs"
             >
               {themeMode === "dark" && (
                 <svg
