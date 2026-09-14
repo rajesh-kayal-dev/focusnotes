@@ -16,7 +16,7 @@ export default defineConfig({
       includeAssets: ['favicon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
       manifest: {
         name: 'FocusNotes',
-        short_name: 'focus',
+        short_name: 'FocusNotes',
         description: 'Turn messy information into focused reading.',
         theme_color: '#09090b',
         background_color: '#09090b',
@@ -50,4 +50,5 @@ export default defineConfig({
     }),
   ],
 });
+
 

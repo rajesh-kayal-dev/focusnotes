@@ -120,9 +120,9 @@ const NoteItem = ({
         <button
           type="button"
           onClick={() => onSelect(note.id)}
-          className="flex min-w-0 flex-1 items-center gap-1.5 truncate text-left"
+          className="flex min-w-0 flex-1 items-center gap-2 truncate text-left"
         >
-          {note.isPinned && (
+          {note.isPinned ? (
             <svg
               aria-label="Pinned note"
               className="h-3.5 w-3.5 shrink-0 text-zinc-400"
@@ -137,8 +137,26 @@ const NoteItem = ({
                 d="M16.5 3.75H7.5m1.5 0v5.25L7 11.25v2.25h10v-2.25l-2-2.25V3.75M12 13.5v6.75"
               />
             </svg>
+          ) : (
+            <svg
+              className={`h-4 w-4 shrink-0 transition-colors ${
+                isActive
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-zinc-500 group-hover:text-zinc-700 dark:text-zinc-500 dark:group-hover:text-zinc-300"
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zM9 11.25h6m-6 3.75h6"
+              />
+            </svg>
           )}
-          <span className="truncate">{note.title}</span>
+          <span className="truncate font-normal">{note.title}</span>
         </button>
       )}
 

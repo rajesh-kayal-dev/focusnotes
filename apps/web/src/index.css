@@ -1,4 +1,21 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Clean, readable selection highlight */
+::selection {
+  background-color: rgba(59, 130, 246, 0.28) !important;
+  color: inherit !important;
+}
+
+html.light ::selection {
+  background-color: rgba(59, 130, 246, 0.22) !important;
+  color: inherit !important;
+}
+
+html.dark ::selection {
+  background-color: rgba(59, 130, 246, 0.35) !important;
+  color: inherit !important;
+}
 
 .milkdown-container .milkdown .editor {
   outline: none;
@@ -7,6 +24,31 @@
   caret-color: #3b82f6;
   font-size: calc(20px * var(--note-zoom, 1));
   line-height: 1.6;
+}
+
+/* Small text mode â€” applies when html has class "small-text" */
+html.small-text .milkdown-container .milkdown .editor {
+  font-size: calc(15px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor p {
+  font-size: calc(15px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor h1 {
+  font-size: calc(28px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor h2 {
+  font-size: calc(24px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor h3 {
+  font-size: calc(18px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor ul,
+html.small-text .milkdown-container .milkdown .editor ol {
+  font-size: calc(15px * var(--note-zoom, 1)) !important;
+}
+html.small-text .milkdown-container .milkdown .editor p:has(> strong:only-child),
+html.small-text .milkdown-container .milkdown .editor p:has(> b:only-child) {
+  font-size: calc(16px * var(--note-zoom, 1)) !important;
 }
 
 .milkdown-container .milkdown .editor p {
@@ -83,6 +125,77 @@
   margin-bottom: calc(0.25rem * var(--note-zoom, 1));
 }
 
+/* Responsive video and embed previews */
+.milkdown-container .milkdown .editor video,
+.milkdown-container .milkdown .editor iframe {
+  display: block;
+  width: min(100%, 720px);
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-width: 320px;
+  min-height: 180px;
+  resize: both;
+  overflow: auto;
+  cursor: grab;
+  margin: calc(1.25rem * var(--note-zoom, 1)) auto;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  background: #18181b;
+}
+
+.milkdown-container .milkdown .editor video {
+  object-fit: contain;
+}
+
+html.light .milkdown-container .milkdown .editor video,
+html.light .milkdown-container .milkdown .editor iframe {
+  border-color: #E5E1D8;
+  background: #FCFBF7;
+}
+
+@media (max-width: 640px) {
+  .milkdown-container .milkdown .editor video,
+  .milkdown-container .milkdown .editor iframe {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.5rem;
+  }
+}
+/* Responsive image previews */
+.milkdown-container .milkdown .editor img {
+  display: block;
+  width: min(100%, 720px);
+  max-width: 100%;
+  max-height: 520px;
+  height: auto;
+  object-fit: contain;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  min-width: 160px;
+  min-height: 100px;
+  margin: calc(1.25rem * var(--note-zoom, 1)) auto;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  background: #18181b;
+}
+
+html.light .milkdown-container .milkdown .editor img {
+  border-color: #E5E1D8;
+  background: #FCFBF7;
+}
+
+@media (max-width: 640px) {
+  .milkdown-container .milkdown .editor img {
+    width: 100%;
+    max-height: 360px;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.5rem;
+  }
+}
 .milkdown-container .milkdown .editor code {
   background-color: #27272a;
   color: #60a5fa;
@@ -90,6 +203,22 @@
   border-radius: calc(0.3rem * var(--note-zoom, 1));
   font-size: calc(17px * var(--note-zoom, 1));
 }
+
+/* Hyperlink styles */
+.milkdown-container .milkdown .editor a[href] {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(96, 165, 250, 0.5);
+  cursor: pointer;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.milkdown-container .milkdown .editor a[href]:hover {
+  color: #93c5fd;
+  text-decoration-color: rgba(147, 197, 253, 0.8);
+}
+
 
 .milkdown-container .milkdown .editor pre {
   background-color: #18181b;
@@ -128,17 +257,45 @@
 }
 
 .milkdown-container .milkdown .editor .task-list-item {
-  list-style-type: none;
+  list-style-type: none !important;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: calc(0.55rem * var(--note-zoom, 1));
+  margin-left: calc(-1.75rem * var(--note-zoom, 1));
+  padding-left: 0;
 }
 
+.milkdown-container .milkdown .editor .task-list-item .task-checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  margin-top: calc(0.28rem * var(--note-zoom, 1));
+  flex-shrink: 0;
+}
+
+.milkdown-container .milkdown .editor .task-list-item input.task-checkbox,
 .milkdown-container .milkdown .editor input[type="checkbox"] {
   accent-color: #3b82f6;
-  width: calc(1.1rem * var(--note-zoom, 1));
-  height: calc(1.1rem * var(--note-zoom, 1));
+  width: calc(1.15rem * var(--note-zoom, 1));
+  height: calc(1.15rem * var(--note-zoom, 1));
   cursor: pointer;
+  margin: 0;
+  border-radius: 4px;
+}
+
+.milkdown-container .milkdown .editor .task-list-item .task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.milkdown-container .milkdown .editor .task-list-item .task-content > p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.milkdown-container .milkdown .editor .task-list-item[data-checked="true"] .task-content {
+  color: #71717a;
+  text-decoration: line-through;
 }
 
 /* Empty Note Placeholder */
@@ -220,6 +377,11 @@ html.light .bg-white\/10 {
   background-color: rgba(0, 0, 0, 0.06) !important;
 }
 
+html.light aside .bg-white\/10 {
+  background-color: #EBF5FF !important;
+  color: #111827 !important;
+}
+
 html.light .bg-white\/15 {
   background-color: rgba(0, 0, 0, 0.09) !important;
 }
@@ -258,7 +420,78 @@ html.light .milkdown-container .milkdown .editor b {
   color: #111111 !important;
 }
 
-html.light .milkdown-container .milkdown .editor code {
+html.light /* Responsive video and embed previews */
+.milkdown-container .milkdown .editor video,
+.milkdown-container .milkdown .editor iframe {
+  display: block;
+  width: min(100%, 720px);
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-width: 320px;
+  min-height: 180px;
+  resize: both;
+  overflow: auto;
+  cursor: grab;
+  margin: calc(1.25rem * var(--note-zoom, 1)) auto;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  background: #18181b;
+}
+
+.milkdown-container .milkdown .editor video {
+  object-fit: contain;
+}
+
+html.light .milkdown-container .milkdown .editor video,
+html.light .milkdown-container .milkdown .editor iframe {
+  border-color: #E5E1D8;
+  background: #FCFBF7;
+}
+
+@media (max-width: 640px) {
+  .milkdown-container .milkdown .editor video,
+  .milkdown-container .milkdown .editor iframe {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.5rem;
+  }
+}
+/* Responsive image previews */
+.milkdown-container .milkdown .editor img {
+  display: block;
+  width: min(100%, 720px);
+  max-width: 100%;
+  max-height: 520px;
+  height: auto;
+  object-fit: contain;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  min-width: 160px;
+  min-height: 100px;
+  margin: calc(1.25rem * var(--note-zoom, 1)) auto;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  background: #18181b;
+}
+
+html.light .milkdown-container .milkdown .editor img {
+  border-color: #E5E1D8;
+  background: #FCFBF7;
+}
+
+@media (max-width: 640px) {
+  .milkdown-container .milkdown .editor img {
+    width: 100%;
+    max-height: 360px;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.5rem;
+  }
+}
+.milkdown-container .milkdown .editor code {
   background-color: #E5E1D8 !important;
   color: #1D4ED8 !important;
 }
@@ -269,6 +502,7 @@ html.light .milkdown-container .milkdown .editor pre {
 }
 
 html.light .milkdown-container .milkdown .editor pre code {
+  background-color: transparent !important;
   color: #252525 !important;
 }
 
@@ -306,6 +540,107 @@ html.light aside[aria-label="Page Zoom"] button:hover {
   color: #252525 !important;
 }
 
+/* Note Tab Bar Light Theme Overrides */
+html.light header {
+  background-color: #F5F3EE !important;
+  border-bottom-color: #E5E1D8 !important;
+}
+
+html.light .tab-active {
+  background-color: #EBF5FF !important;
+  color: #111827 !important;
+  border-bottom-color: #2563EB !important;
+}
+
+html.light .tab-inactive {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #4B5563 !important;
+}
+
+html.light .tab-inactive:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  color: #111827 !important;
+}
+
+/* Theme Toggle Button & Theme Options Light Theme Styling */
+html.light aside button[aria-label="Toggle theme"],
+html.light aside button[aria-label="Dark Mode"],
+html.light aside button[aria-label="Light Mode"],
+html.light aside button[aria-label="Auto Mode"] {
+  border-color: rgba(0, 0, 0, 0.18) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #252525 !important;
+}
+
+html.light aside button[aria-label="Toggle theme"]:hover,
+html.light aside button[aria-label="Dark Mode"]:hover,
+html.light aside button[aria-label="Light Mode"]:hover,
+html.light aside button[aria-label="Auto Mode"]:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Focus Mode Floating Action Buttons Light Theme Overrides */
+html.light .focus-floating-btn {
+  background-color: rgba(252, 251, 247, 0.9) !important;
+  border-color: #E5E1D8 !important;
+  color: #4A4A4A !important;
+}
+
+html.light .focus-floating-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: #111111 !important;
+}
+
+/* Selection Floating Toolbar Light Theme Overrides */
+html.light .selection-toolbar-pill {
+  background-color: rgba(252, 251, 247, 0.96) !important;
+  border-color: #E5E1D8 !important;
+  color: #252525 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .selection-toolbar-pill button {
+  color: #374151 !important;
+}
+
+html.light .selection-toolbar-pill button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: #111827 !important;
+}
+
+html.light .selection-toolbar-pill .btn-active {
+  background-color: #EFF6FF !important;
+  color: #2563EB !important;
+  border-color: #BFDBFE !important;
+}
+
+html.light .selection-toolbar-divider {
+  background-color: #E5E1D8 !important;
+}
+
+html.light .selection-toolbar-dropdown {
+  background-color: #FCFBF7 !important;
+  border-color: #E5E1D8 !important;
+  color: #252525 !important;
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.15), 0 8px 16px -3px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .selection-toolbar-dropdown button {
+  color: #374151 !important;
+}
+
+html.light .selection-toolbar-dropdown button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  color: #111827 !important;
+}
+
+html.light .selection-toolbar-badge {
+  border-color: #E5E1D8 !important;
+  background-color: #F0EEE6 !important;
+  color: #374151 !important;
+}
+
 /* Eye Care Warm Reading Mode Overlay */
 html.eyecare::after {
   content: "";
@@ -318,4 +653,205 @@ html.eyecare::after {
 
 html.light.eyecare::after {
   background-color: rgba(245, 158, 11, 0.1);
-}
+}
+
+/* Hide scrollbars for horizontal scrollable toolbars */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.milkdown-container .milkdown .editor pre code .hljs-keyword,
+.milkdown-container .milkdown .editor pre code .hljs-selector-tag,
+.milkdown-container .milkdown .editor pre code .hljs-literal,
+.milkdown-container .milkdown .editor pre code .hljs-type { color: #c084fc; }
+.milkdown-container .milkdown .editor pre code .hljs-string,
+.milkdown-container .milkdown .editor pre code .hljs-regexp,
+.milkdown-container .milkdown .editor pre code .hljs-attr { color: #86efac; }
+.milkdown-container .milkdown .editor pre code .hljs-number,
+.milkdown-container .milkdown .editor pre code .hljs-symbol,
+.milkdown-container .milkdown .editor pre code .hljs-bullet { color: #fbbf24; }
+.milkdown-container .milkdown .editor pre code .hljs-title,
+.milkdown-container .milkdown .editor pre code .hljs-section { color: #67e8f9; }
+.milkdown-container .milkdown .editor pre code .hljs-comment,
+.milkdown-container .milkdown .editor pre code .hljs-quote { color: #a1a1aa; font-style: italic; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-keyword,
+html.light .milkdown-container .milkdown .editor pre code .hljs-selector-tag,
+html.light .milkdown-container .milkdown .editor pre code .hljs-literal,
+html.light .milkdown-container .milkdown .editor pre code .hljs-type { color: #7c3aed; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-string,
+html.light .milkdown-container .milkdown .editor pre code .hljs-regexp,
+html.light .milkdown-container .milkdown .editor pre code .hljs-attr { color: #15803d; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-number,
+html.light .milkdown-container .milkdown .editor pre code .hljs-symbol,
+html.light .milkdown-container .milkdown .editor pre code .hljs-bullet { color: #b45309; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-title,
+html.light .milkdown-container .milkdown .editor pre code .hljs-section { color: #0369a1; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-comment,
+html.light .milkdown-container .milkdown .editor pre code .hljs-quote { color: #71717a; }
+
+.milkdown-container .milkdown .editor pre code .hljs-keyword,
+.milkdown-container .milkdown .editor pre code .hljs-selector-tag,
+.milkdown-container .milkdown .editor pre code .hljs-literal,
+.milkdown-container .milkdown .editor pre code .hljs-type { color: #c084fc; }
+.milkdown-container .milkdown .editor pre code .hljs-string,
+.milkdown-container .milkdown .editor pre code .hljs-regexp,
+.milkdown-container .milkdown .editor pre code .hljs-attr { color: #86efac; }
+.milkdown-container .milkdown .editor pre code .hljs-number,
+.milkdown-container .milkdown .editor pre code .hljs-symbol,
+.milkdown-container .milkdown .editor pre code .hljs-bullet { color: #fbbf24; }
+.milkdown-container .milkdown .editor pre code .hljs-title,
+.milkdown-container .milkdown .editor pre code .hljs-section { color: #67e8f9; }
+.milkdown-container .milkdown .editor pre code .hljs-comment,
+.milkdown-container .milkdown .editor pre code .hljs-quote { color: #a1a1aa; font-style: italic; }
+
+html.light .milkdown-container .milkdown .editor pre code .hljs-keyword,
+html.light .milkdown-container .milkdown .editor pre code .hljs-selector-tag,
+html.light .milkdown-container .milkdown .editor pre code .hljs-literal,
+html.light .milkdown-container .milkdown .editor pre code .hljs-type { color: #7c3aed; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-string,
+html.light .milkdown-container .milkdown .editor pre code .hljs-regexp,
+html.light .milkdown-container .milkdown .editor pre code .hljs-attr { color: #15803d; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-number,
+html.light .milkdown-container .milkdown .editor pre code .hljs-symbol,
+html.light .milkdown-container .milkdown .editor pre code .hljs-bullet { color: #b45309; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-title,
+html.light .milkdown-container .milkdown .editor pre code .hljs-section { color: #0369a1; }
+html.light .milkdown-container .milkdown .editor pre code .hljs-comment,
+html.light .milkdown-container .milkdown .editor pre code .hljs-quote { color: #71717a; }
+
+/* Keep scrolling enabled without displaying native scrollbars */
+html,
+body,
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+
+
+
+
+.focusnotes-video-preview {
+  display: block;
+  width: min(100%, 720px);
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  min-width: 320px;
+  min-height: 180px;
+  resize: both;
+  overflow: hidden;
+  cursor: grab;
+  margin: calc(1.25rem * var(--note-zoom, 1)) auto;
+  border: 1px solid #27272a;
+  border-radius: 0.75rem;
+  background: #18181b;
+}
+
+.focusnotes-video-preview iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+html.light .focusnotes-video-preview {
+  border-color: #E5E1D8;
+  background: #FCFBF7;
+}
+
+@media (max-width: 640px) {
+  .focusnotes-video-preview {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.5rem;
+  }
+}
+
+.focusnotes-image-toolbar {
+  position: fixed;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  background: rgba(24, 24, 27, 0.96);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.focusnotes-image-toolbar button {
+  border: 0;
+  border-radius: 5px;
+  padding: 4px 7px;
+  color: #d4d4d8;
+  background: transparent;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.focusnotes-image-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.focusnotes-image-toolbar button:last-child:hover {
+  color: #fca5a5;
+}
+
+html.light .focusnotes-image-toolbar {
+  border-color: #e5e1d8;
+  background: rgba(252, 251, 247, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+
+html.light .focusnotes-image-toolbar button {
+  color: #4a4a4a;
+}
+
+html.light .focusnotes-image-toolbar button:hover {
+  background: rgba(0, 0, 0, 0.07);
+  color: #111;
+}
+
+
+
+.focusnotes-image-resize-handle {
+  position: fixed;
+  z-index: 10001;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  pointer-events: none;
+  color: #18181b;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.75));
+}
+
+.focusnotes-image-resize-handle svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+}
+
+html.dark .focusnotes-image-resize-handle {
+  color: #f4f4f5;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+

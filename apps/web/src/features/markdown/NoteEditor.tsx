@@ -64,33 +64,11 @@ const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
 
   return (
     <article className="min-h-full outline-none">
-      {/* Large note title at the top */}
-      <div className="mb-1">
-        <input
-          type="text"
-          value={note.title}
-          onChange={(event) =>
-            onUpdateNote(note.id, {
-              title: event.target.value,
-            })
-          }
-          style={{
-            fontSize: `clamp(32px, calc(54px * var(--note-zoom, 1)), 76px)`,
-          }}
-          className={`w-full bg-transparent font-bold tracking-tight leading-[1.1] outline-none transition-colors p-0 m-0 ${
-            isUntitled
-              ? "text-zinc-500 placeholder:text-zinc-600 focus:text-zinc-100"
-              : "text-zinc-100 placeholder:text-zinc-600"
-          }`}
-          placeholder="Untitled Note"
-        />
-      </div>
-
-      {/* Small metadata row directly below the title */}
+      {/* Small metadata row above the title */}
       <div
         style={{
           fontSize: `calc(13.5px * var(--note-zoom, 1))`,
-          marginBottom: `calc(2rem * var(--note-zoom, 1))`,
+          marginBottom: `calc(0.75rem * var(--note-zoom, 1))`,
         }}
         className="flex items-center gap-1.5 text-zinc-500 select-none"
       >
@@ -118,7 +96,33 @@ const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
         </span>
       </div>
 
-      {/* Body content below the metadata */}
+      {/* Large note title */}
+      <div
+        style={{
+          marginBottom: `calc(1.75rem * var(--note-zoom, 1))`,
+        }}
+      >
+        <input
+          type="text"
+          value={note.title}
+          onChange={(event) =>
+            onUpdateNote(note.id, {
+              title: event.target.value,
+            })
+          }
+          style={{
+            fontSize: `clamp(32px, calc(54px * var(--note-zoom, 1)), 76px)`,
+          }}
+          className={`w-full bg-transparent font-bold tracking-tight leading-[1.1] outline-none transition-colors p-0 m-0 ${
+            isUntitled
+              ? "text-zinc-500 placeholder:text-zinc-600 focus:text-zinc-100"
+              : "text-zinc-100 placeholder:text-zinc-600"
+          }`}
+          placeholder="Untitled Note"
+        />
+      </div>
+
+      {/* Body content below the title */}
       <MilkdownProvider key={note.id}>
         <MilkdownEditor
           content={note.content}
