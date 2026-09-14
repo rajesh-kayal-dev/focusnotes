@@ -9,16 +9,48 @@ FocusNotes is a local-first writing and reading workspace for turning messy info
 - Preserve user data locally and keep the application useful offline.
 - Collaborate in small, reviewable branches with clear Conventional Commits.
 
-## Repository
+## Project Structure
 
-This repository is a pnpm monorepo. The web application lives in `apps/web`.
+FocusNotes is a pnpm monorepo. The application currently contains one web workspace and shared documentation:
+
+```text
+focusnotes/
+├── apps/
+│   └── web/                 React, TypeScript, Vite, and PWA application
+│       ├── public/          Static icons and public assets
+│       └── src/             Application source code
+│           ├── app/         Application layout
+│           ├── components/  Shared interface components
+│           ├── db/          IndexedDB persistence
+│           ├── features/    Notes, Markdown, search, theme, zoom, and PWA logic
+│           └── lib/         Reusable utilities
+├── docs/                    Development, architecture, and design notes
+├── packages/                Reserved for future shared packages
+├── .env.example             Local environment variable template
+├── package.json             Workspace scripts and package manager metadata
+├── pnpm-workspace.yaml      Workspace package definitions
+
+├── LICENSE                  MIT license
+└── README.md                Project documentation
+```
+
+## Project Details
+
+- **Frontend:** React, TypeScript, Vite, and Tailwind CSS
+- **Editor:** Milkdown with Markdown support and syntax highlighting
+- **Storage:** Browser IndexedDB through `idb`
+- **Application features:** Notes, tabs, search, focus mode, themes, page zoom, downloads, and media previews
+- **Offline support:** Installable PWA with a generated service worker
+- **Data model:** Local browser data; no backend or required external services
 
 ## Requirements
 
 - Node.js 22 or newer
 - pnpm 10.33.0 or compatible
 
-## Setup
+## Getting Started
+
+Install dependencies and start the development server:
 
 ```bash
 pnpm install
@@ -29,7 +61,9 @@ The development server is available at `http://localhost:5173`.
 
 FocusNotes currently has no required environment variables. Copy `.env.example` to `.env` only when adding local configuration. Never commit `.env` or real secrets.
 
-## Checks
+## Validation
+
+Run the project checks before opening a pull request:
 
 ```bash
 pnpm lint
@@ -38,28 +72,30 @@ pnpm build
 
 The production build is written to `apps/web/dist`.
 
-## Vercel Deployment
-
-The root `vercel.json` configures Vercel to install the workspace, build the `web` package, publish `apps/web/dist`, and serve the client-side application fallback.
-
-To deploy with Vercel:
-
-1. Import the GitHub repository into Vercel.
-2. Leave the project root at the repository root.
-3. Keep the build and output settings from `vercel.json`.
-4. Add only the environment variables required by future integrations; none are needed for the current app.
-5. Deploy the branch or open pull request preview before promoting to production.
-
 ## Collaboration
 
-Use short-lived branches such as `feature/*`, `fix/*`, and `chore/*`. Run lint and the production build before opening a pull request. Use Conventional Commits, for example:
+Start work from an up-to-date `main` branch and use a short-lived branch for each change:
 
-```text
-chore: prepare deployment configuration
+```bash
+git switch main
+git pull origin main
+git switch -c feature/your-change
 ```
 
-Pull requests target `main` and should be reviewed before merging.
+Use `feature/*`, `fix/*`, or `chore/*` branch names. Run lint and the production build before opening a pull request. Use Conventional Commits, for example:
+
+```text
+feat(notes): improve note search
+fix(editor): preserve markdown formatting
+chore: update project documentation
+```
+
+Pull requests target `main` and should be reviewed before merging. For questions, improvements, or collaboration, open an issue or start a discussion in the repository.
 
 ## License
 
 FocusNotes is available under the [MIT License](LICENSE).
+
+## Author
+
+Rajesh
