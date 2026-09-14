@@ -89,6 +89,8 @@ const NoteItem = ({
     }
   };
 
+  const canDownload = Boolean(note.content.trim() || (!note.fileName && note.title.trim() !== "Untitled Note"));
+
   const handleDownload = () => {
     setIsMenuOpen(false);
     if (onDownload) {
@@ -277,7 +279,8 @@ const NoteItem = ({
           <button
             type="button"
             onClick={handleDownload}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100"
+            disabled={!canDownload}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-zinc-300 hover:bg-white/5 hover:text-zinc-100 disabled:pointer-events-none disabled:opacity-40"
           >
             <svg
               className="h-4 w-4 shrink-0"
@@ -292,7 +295,7 @@ const NoteItem = ({
                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
               />
             </svg>
-            <span>Download Markdown</span>
+            <span>Download</span>
           </button>
 
           <hr className="my-1 border-white/10" />

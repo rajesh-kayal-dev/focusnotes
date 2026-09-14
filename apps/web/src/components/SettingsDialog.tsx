@@ -294,6 +294,18 @@ const SettingsDialog = ({
             </h3>
             <div className={`grid grid-cols-2 gap-2 rounded-xl p-3 text-xs ${cardClasses}`}>
               <div className="flex items-center justify-between pr-2">
+                <span className={textMuted}>Open File</span>
+                <kbd className={`rounded px-1.5 py-0.5 font-mono text-[10px] ${kbdClasses}`}>
+                  Ctrl + O
+                </kbd>
+              </div>
+              <div className="flex items-center justify-between pr-2">
+                <span className={textMuted}>Save File</span>
+                <kbd className={`rounded px-1.5 py-0.5 font-mono text-[10px] ${kbdClasses}`}>
+                  Ctrl + S
+                </kbd>
+              </div>
+              <div className="flex items-center justify-between pr-2">
                 <span className={textMuted}>Download Note</span>
                 <kbd className={`rounded px-1.5 py-0.5 font-mono text-[10px] ${kbdClasses}`}>
                   Ctrl + D

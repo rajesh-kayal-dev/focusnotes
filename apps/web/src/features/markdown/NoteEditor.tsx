@@ -8,6 +8,8 @@ type NoteEditorProps = {
     id: string,
     updates: Partial<Pick<Note, "title" | "content">>,
   ) => void;
+  onOpenFile?: () => void;
+  onSaveFile?: (note: Note) => Promise<boolean>;
 };
 
 const formatRelativeTime = (timestamp: number): string => {
@@ -50,7 +52,7 @@ const getWordCount = (content: string): number => {
   return words.length;
 };
 
-const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
+const NoteEditor = ({ note, onUpdateNote, onOpenFile }: NoteEditorProps) => {
   if (!note) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center text-zinc-500">
@@ -129,10 +131,11 @@ const NoteEditor = ({ note, onUpdateNote }: NoteEditorProps) => {
           onChange={(newContent) =>
             onUpdateNote(note.id, { content: newContent })
           }
+          onOpenFile={onOpenFile}
         />
       </MilkdownProvider>
     </article>
   );
 };
 
-export default NoteEditor;
+export default NoteEditor;
