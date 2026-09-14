@@ -101,7 +101,7 @@ export const useNoteTabs = (
   const selectTab = useCallback(
     (id: string) => {
       if (!effectiveOpenTabIds.includes(id)) {
-        setOpenTabIds([...effectiveOpenTabIds, id]);
+        setOpenTabIds((currentTabs) => currentTabs.includes(id) ? currentTabs : [...currentTabs, id]);
       }
       setActiveNoteId(id);
     },
@@ -115,7 +115,7 @@ export const useNoteTabs = (
       }
 
       const nextTabs = effectiveOpenTabIds.filter((id) => id !== idToClose);
-      setOpenTabIds(nextTabs);
+      setOpenTabIds(() => nextTabs);
 
       if (idToClose === activeNoteId) {
         if (nextTabs.length > 0) {

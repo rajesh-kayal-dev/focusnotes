@@ -72,6 +72,40 @@ const useNotes = () => {
     }
   };
 
+  const openFile = async (file: File, replaceNoteId?: string) => {
+    const fileName = file.name.trim();
+    const extension = fileName.split(".").pop()?.toLowerCase();
+
+    if (extension !== "md" && extension !== "txt") {
+      throw new Error("UNSUPPORTED_FILE_TYPE");
+    }
+
+    const now = Date.now();
+    const note: Note = {
+      id: crypto.randomUUID(),
+      title: fileName,
+      fileName,
+      content: await file.text(),
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    if (replaceNoteId) {
+      const existingNote = notes.find((item) => item.id === replaceNoteId);
+      if (existingNote) {
+        const replacedNote = { ...note, id: existingNote.id, createdAt: existingNote.createdAt };
+        await saveNote(replacedNote);
+        setNotes((currentNotes) => currentNotes.map((item) => item.id === replaceNoteId ? replacedNote : item));
+        setActiveNoteId(replaceNoteId);
+        return;
+      }
+    }
+
+    await saveNote(note);
+    setNotes((currentNotes) => [note, ...currentNotes]);
+    setActiveNoteId(note.id);
+  };
+
   const updateNote = (
     id: string,
     updates: Partial<Pick<Note, "title" | "content" | "isPinned">>,
@@ -156,6 +190,7 @@ const useNotes = () => {
     activeNoteId,
     setActiveNoteId,
     addNote,
+    openFile,
     updateNote,
     deleteNote,
     duplicateNote,

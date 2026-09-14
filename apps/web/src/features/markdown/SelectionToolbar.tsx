@@ -250,7 +250,6 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
 
       if (visibleRef.current) {
         if (!isSameRange) {
-          setActiveDropdown(null);
           setLinkInput("");
         }
         setSelectionRange(currentRange);
@@ -315,14 +314,22 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
 
   const { state, dispatch } = editorView;
   const { schema, selection } = state;
-  const from = selectionRange.from;
-  const to = selectionRange.to;
+  const liveTextSelection = selection instanceof TextSelection && !selection.empty ? selection : null;
+  const from = liveTextSelection?.from ?? selectionRange.from;
+  const to = liveTextSelection?.to ?? selectionRange.to;
 
-  // Active mark detection
+  // Inline formatting must reflect the complete live character range.
   const isMarkActive = (kind: "bold" | "italic" | "underline" | "strike" | "code" | "link"): boolean => {
     const mt = getMarkType(schema, kind);
     if (!mt || from === to) return false;
-    return state.doc.rangeHasMark(from, to, mt);
+    let hasText = false;
+    let fullyMarked = true;
+    state.doc.nodesBetween(from, to, (node) => {
+      if (!node.isText) return;
+      hasText = true;
+      if (!node.marks.some((mark) => mark.type === mt)) fullyMarked = false;
+    });
+    return hasText && fullyMarked;
   };
 
   let activeTextColor: string | null = null;
@@ -377,7 +384,7 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
     if (from === to) return;
     const mt = getMarkType(schema, kind);
     if (!mt) return;
-    const isActive = state.doc.rangeHasMark(from, to, mt);
+    const isActive = isMarkActive(kind);
     let tr = state.tr;
     tr = isActive ? tr.removeMark(from, to, mt) : tr.addMark(from, to, mt.create());
     tr = tr.setSelection(TextSelection.create(tr.doc, from, to));
@@ -387,8 +394,8 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
 
   // Block type
   const handleSetBlockType = (type: string) => {
-    setActiveDropdown(null);
     const { $from, $to, from, to } = state.selection;
+    const activeBlock = getCurrentBlockInfo();
 
     if (type === "paragraph") {
       // 1. If inside list item, lift it out of the list
@@ -436,31 +443,46 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
         setBlockType(schema.nodes.paragraph)(state, dispatch);
       }
     } else if (type === "h1" && schema.nodes.heading) {
-      setBlockType(schema.nodes.heading, { level: 1 })(state, dispatch);
+      const command = activeBlock.key === "h1" ? setBlockType(schema.nodes.paragraph) : setBlockType(schema.nodes.heading, { level: 1 });
+      command(state, dispatch);
     } else if (type === "h2" && schema.nodes.heading) {
-      setBlockType(schema.nodes.heading, { level: 2 })(state, dispatch);
+      const command = activeBlock.key === "h2" ? setBlockType(schema.nodes.paragraph) : setBlockType(schema.nodes.heading, { level: 2 });
+      command(state, dispatch);
     } else if (type === "h3" && schema.nodes.heading) {
-      setBlockType(schema.nodes.heading, { level: 3 })(state, dispatch);
+      const command = activeBlock.key === "h3" ? setBlockType(schema.nodes.paragraph) : setBlockType(schema.nodes.heading, { level: 3 });
+      command(state, dispatch);
     } else if (type === "bullet_list" || type === "ordered_list" || type === "todo_list") {
       const targetListType = type === "ordered_list" ? schema.nodes.ordered_list : schema.nodes.bullet_list;
       if (!targetListType) return;
 
+      // List items contain paragraphs, so normalize headings before wrapping.
+      const normalizeTr = state.tr;
+      state.doc.nodesBetween(from, to, (node, pos) => {
+        if (node.type === schema.nodes.heading && schema.nodes.paragraph) {
+          normalizeTr.setNodeMarkup(pos, schema.nodes.paragraph, undefined, node.marks);
+        }
+      });
+      if (normalizeTr.docChanged) {
+        dispatch(normalizeTr);
+      }
+      const listState = editorView.state;
+
       let currentListItemPos: number | null = null;
       let currentListParentPos: number | null = null;
       for (let d = $from.depth; d > 0; d--) {
-        if ($from.node(d).type === schema.nodes.list_item) {
-          currentListItemPos = $from.before(d);
-          currentListParentPos = $from.before(d - 1);
+        if (listState.selection.$from.node(d).type === schema.nodes.list_item) {
+          currentListItemPos = listState.selection.$from.before(d);
+          currentListParentPos = listState.selection.$from.before(d - 1);
           break;
         }
       }
 
       // If already in a list
       if (currentListItemPos !== null && currentListParentPos !== null) {
-        const parentNode = state.doc.nodeAt(currentListParentPos);
+        const parentNode = listState.doc.nodeAt(currentListParentPos);
         if (type === "todo_list") {
-          const tr = state.tr;
-          state.doc.nodesBetween($from.pos, $to.pos, (n, p) => {
+          const tr = listState.tr;
+          listState.doc.nodesBetween(listState.selection.from, listState.selection.to, (n, p) => {
             if (n.type === schema.nodes.list_item) {
               tr.setNodeMarkup(p, undefined, {
                 ...n.attrs,
@@ -478,8 +500,8 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
         }
 
         if (parentNode && parentNode.type !== targetListType) {
-          const tr = state.tr.setNodeMarkup(currentListParentPos, targetListType);
-          state.doc.nodesBetween($from.pos, $to.pos, (n, p) => {
+          const tr = listState.tr.setNodeMarkup(currentListParentPos, targetListType);
+          listState.doc.nodesBetween(listState.selection.from, listState.selection.to, (n, p) => {
             if (n.type === schema.nodes.list_item && n.attrs.checked != null) {
               tr.setNodeMarkup(p, undefined, { ...n.attrs, checked: null });
             }
@@ -490,10 +512,16 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
           return;
         }
 
+        if (parentNode && parentNode.type === targetListType && activeBlock.key !== "todo_list") {
+          liftListItem(schema.nodes.list_item)(listState, dispatch);
+          editorView.focus();
+          return;
+        }
+
         if (parentNode && parentNode.type === targetListType) {
-          const tr = state.tr;
+          const tr = listState.tr;
           let hasChecked = false;
-          state.doc.nodesBetween($from.pos, $to.pos, (n, p) => {
+          listState.doc.nodesBetween(listState.selection.from, listState.selection.to, (n, p) => {
             if (n.type === schema.nodes.list_item && n.attrs.checked != null) {
               tr.setNodeMarkup(p, undefined, { ...n.attrs, checked: null });
               hasChecked = true;
@@ -508,7 +536,7 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
       }
 
       // Not in a list: wrap selected paragraph(s) into list & join adjacent
-      wrapInList(targetListType)(state, (tr) => {
+      wrapInList(targetListType)(listState, (tr) => {
         if (type === "todo_list") {
           tr.doc.nodesBetween(tr.mapping.map($from.pos), tr.mapping.map($to.pos), (n, p) => {
             if (n.type === schema.nodes.list_item) {
@@ -521,6 +549,11 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
         editorView.focus();
       });
     } else if (type === "code_block" && schema.nodes.code_block) {
+      if (activeBlock.key === "code_block") {
+        setBlockType(schema.nodes.paragraph)(state, dispatch);
+        editorView.focus();
+        return;
+      }
       const selectedText = state.doc.textBetween(from, to, "\n");
       if (from !== to && selectedText) {
         const detected = detectLanguage(selectedText);
@@ -531,7 +564,12 @@ export const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ editorView, 
         setBlockType(schema.nodes.code_block, { language: "javascript" })(state, dispatch);
       }
     } else if (type === "blockquote" && schema.nodes.blockquote) {
-      wrapIn(schema.nodes.blockquote)(state, dispatch);
+      if (activeBlock.key === "blockquote") {
+        lift(state, dispatch);
+      } else {
+        wrapIn(schema.nodes.blockquote)(state, dispatch);
+      }
+      editorView.focus();
     } else if (type === "callout") {
       let inQuote = false;
       for (let d = $from.depth; d > 0; d--) {

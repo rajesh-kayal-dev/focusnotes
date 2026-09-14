@@ -16,6 +16,7 @@ type SidebarProps = {
   onTogglePinNote?: (id: string) => void;
   onDownloadNote?: (note: Note) => void;
   onToggleSidebar?: () => void;
+  isOpen?: boolean;
   onOpenHowToUse?: () => void;
   canInstallPWA?: boolean;
   onInstallPWA?: () => void;

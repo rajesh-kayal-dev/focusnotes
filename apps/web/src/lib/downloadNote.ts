@@ -5,17 +5,23 @@ export const downloadNote = (note: Note | undefined): void => {
     return;
   }
 
-  const sanitizedTitle = note.title
+  const sanitizedTitle = (note.fileName || note.title)
     .trim()
     .replace(/[/\\?%*:|"<>]/g, "-")
     .replace(/\.+$/, "")
     .trim();
 
   const baseName = sanitizedTitle || "Untitled Note";
-  const fileName = baseName.endsWith(".md") ? baseName : `${baseName}.md`;
+  const fileName = note.fileName
+    ? baseName
+    : baseName.endsWith(".md")
+      ? baseName
+      : `${baseName}.md`;
 
   const blob = new Blob([note.content], {
-    type: "text/markdown;charset=utf-8",
+    type: fileName.toLowerCase().endsWith(".txt")
+      ? "text/plain;charset=utf-8"
+      : "text/markdown;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
 

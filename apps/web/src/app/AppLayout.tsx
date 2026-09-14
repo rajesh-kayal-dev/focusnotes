@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import HowToUseDialog from "../components/HowToUseDialog";
 import SettingsDialog from "../components/SettingsDialog";
 import MainContent from "../components/MainContent";
@@ -12,8 +12,10 @@ import { useNoteTabs } from "../features/tabs/useNoteTabs";
 import useTheme from "../features/theme/useTheme";
 import usePageZoom from "../features/zoom/usePageZoom";
 import PageZoomControl from "../components/PageZoomControl";
+import type { Note } from "../features/notes/types";
 
 const AppLayout = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() =>
     typeof window === "undefined" || window.innerWidth >= 768,
@@ -142,12 +144,65 @@ const AppLayout = () => {
     activeNoteId,
     setActiveNoteId,
     addNote,
+    openFile,
     updateNote,
     deleteNote,
     duplicateNote,
     togglePinNote,
     isLoading,
   } = useNotes();
+
+  const openSelectedFile = async (file: File) => {
+    const shouldReuseBlankNote = Boolean(activeNote && !activeNote.fileName && !activeNote.content && activeNote.title === "Untitled Note");
+    try { await openFile(file, shouldReuseBlankNote ? activeNote?.id : undefined); } catch (error) {
+      if (error instanceof Error && error.message === "UNSUPPORTED_FILE_TYPE") window.alert("Sorry, this file cannot be opened. Use .txt or .md only.");
+      else window.alert("Sorry, this file could not be opened.");
+    }
+  };
+
+  const handleOpenFile = () => fileInputRef.current?.click();
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) void openSelectedFile(file);
+  };
+
+  const saveActiveFile = async (note: Note): Promise<boolean> => {
+    const canSave = Boolean(note.content.trim() || (!note.fileName && note.title.trim() !== "Untitled Note"));
+    if (!canSave) return false;
+    if (!window.confirm("Do you want to save this file?")) return false;
+    const suggestedName = note.fileName || (note.title.trim() || "Untitled Note") + ".md";
+    const picker = (window as Window & { showSaveFilePicker?: (options?: { suggestedName: string; types: Array<{ description: string; accept: Record<string, string[]> }> }) => Promise<{ createWritable: () => Promise<{ write: (content: string) => Promise<void>; close: () => Promise<void> }> }> }).showSaveFilePicker;
+    if (!picker) {
+      window.alert("Your browser does not support the save explorer. Please use Chrome or Edge.");
+      return false;
+    }
+    try {
+      const handle = await picker({ suggestedName, types: [{ description: "Text or Markdown file", accept: { "text/plain": [".txt"], "text/markdown": [".md"] } }] });
+      const writable = await handle.createWritable();
+      await writable.write(note.content);
+      await writable.close();
+      return true;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return false;
+      window.alert("Sorry, this file could not be saved.");
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o") { event.preventDefault(); handleOpenFile(); }
+      else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        if (activeNote && (activeNote.content.trim() || (!activeNote.fileName && activeNote.title.trim() !== "Untitled Note"))) {
+          void saveActiveFile(activeNote);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeNote]);
 
   const {
     openTabIds,
@@ -170,6 +225,7 @@ const AppLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-zinc-950 text-zinc-100">
+      <input ref={fileInputRef} type="file" accept=".md,.txt,text/markdown,text/plain" className="hidden" onChange={handleFileInputChange} />
       {!isFocusMode && isSidebarOpen && (
         <Sidebar
           notes={notes}
@@ -181,6 +237,7 @@ const AppLayout = () => {
           onRenameNote={(id, title) => updateNote(id, { title })}
           onDuplicateNote={duplicateNote}
           onTogglePinNote={togglePinNote}
+          onDownloadNote={saveActiveFile}
           onToggleSidebar={() => setIsSidebarOpen((open) => !open)}
           onOpenHowToUse={() => setIsHowToUseOpen(true)}
           canInstallPWA={canInstallPWA}
@@ -210,6 +267,9 @@ const AppLayout = () => {
         onSelectTab={selectTab}
         onCloseTab={closeTab}
         onAddNote={addNote}
+        onOpenFile={handleOpenFile}
+        onOpenFileData={openSelectedFile}
+        onSaveFile={saveActiveFile}
         onOpenSettings={() => setIsSettingsOpen(true)}
         isDND={isDND}
         onToggleDND={handleToggleDND}

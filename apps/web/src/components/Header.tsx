@@ -15,6 +15,8 @@ type HeaderProps = {
   onSelectTab?: (id: string) => void;
   onCloseTab?: (id: string, e?: React.MouseEvent) => void;
   onAddNote?: () => void;
+  onOpenFile?: () => void;
+  onSaveFile?: (note: Note) => Promise<boolean>;
   onOpenSettings?: () => void;
   isDND?: boolean;
   onToggleDND?: (enabled: boolean) => void;
@@ -31,6 +33,8 @@ const Header = ({
   onSelectTab,
   onCloseTab,
   onAddNote,
+  onOpenFile,
+  onSaveFile,
   onOpenSettings,
   isDND: propIsDND,
   onToggleDND,
@@ -80,6 +84,7 @@ const Header = ({
   });
 
   const isDND = propIsDND !== undefined ? propIsDND : localDND;
+  const canSaveNote = Boolean(note && (note.content.trim() || (!note.fileName && note.title.trim() !== "Untitled Note")));
 
   const showToast = useCallback((msg: string) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -121,9 +126,15 @@ const Header = ({
     const handleGlobalKeys = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") {
         e.preventDefault();
-        if (note) {
-          downloadNote(note);
-          showToast(`Downloaded "${note.title || "note"}.md"`);
+        if (note && canSaveNote) {
+          if (onSaveFile) {
+            void onSaveFile(note).then((saved) => {
+              if (saved) showToast(`Downloaded "${note.fileName || `${note.title || "note"}.md`}"`);
+            });
+          } else {
+            downloadNote(note);
+            showToast(`Downloaded "${note.fileName || `${note.title || "note"}.md`}"`);
+          }
         }
       } else if ((e.ctrlKey || e.metaKey) && e.key === ",") {
         e.preventDefault();
@@ -132,13 +143,19 @@ const Header = ({
     };
     window.addEventListener("keydown", handleGlobalKeys);
     return () => window.removeEventListener("keydown", handleGlobalKeys);
-  }, [note, onOpenSettings, showToast]);
+  }, [note, canSaveNote, onOpenFile, onOpenSettings, onSaveFile, showToast]);
 
   const handleDownload = () => {
-    if (!note) return;
-    downloadNote(note);
+    if (!note || !canSaveNote) return;
+    if (onSaveFile) {
+      void onSaveFile(note).then((saved) => {
+        if (saved) showToast(`Downloaded "${note.fileName || `${note.title || "note"}.md`}"`);
+      });
+    } else {
+      downloadNote(note);
+      showToast(`Downloaded "${note.fileName || `${note.title || "note"}.md`}"`);
+    }
     closeMenu();
-    showToast(`Downloaded "${note.title || "note"}.md"`);
   };
 
   const handleCopyLink = async () => {
@@ -160,7 +177,7 @@ const Header = ({
   const handleShareFile = async () => {
     if (!note) return;
     closeMenu();
-    const fileName = `${(note.title || "Untitled").replace(/[/\\?%*:|"<>]/g, "-")}.md`;
+    const fileName = note.fileName || `${(note.title || "Untitled").replace(/[/\\?%*:|"<>]/g, "-")}.md`;
     const content = note.content || "";
 
     // If Web Share API supports file sharing, share physical file
@@ -409,11 +426,28 @@ const Header = ({
               {menuView === "main" ? (
                 /* Main Menu View */
                 <>
-                  {/* 1. Download Option */}
+                  {/* 1. Open File Option */}
+                  <button
+                    type="button"
+                    onClick={() => { closeMenu(); onOpenFile?.(); }}
+                    className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition ${itemHoverClasses}`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <svg className={`h-4.5 w-4.5 shrink-0 ${iconClasses}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A2.25 2.25 0 015.25 5.25h4.129c.597 0 1.17.237 1.591.659l1.121 1.121c.422.422.994.659 1.591.659h5.068A2.25 2.25 0 0121 9.939v8.811A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18.75V7.5z" />
+                      </svg>
+                      <div className="truncate"><div className="text-sm font-medium">Open File</div><div className={`text-[11px] mt-0.5 ${subtitleClasses}`}>Open .md or .txt</div></div>
+                    </div>
+                    <span className={`font-mono text-[10px] shrink-0 ml-2 ${subtitleClasses}`}>Ctrl + O</span>
+                  </button>
+
+                  <div className={`border-b my-1 ${dividerClasses}`} />
+
+                  {/* 2. Download Option */}
                   <button
                     type="button"
                     onClick={handleDownload}
-                    disabled={!note}
+                    disabled={!canSaveNote}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition disabled:opacity-40 disabled:pointer-events-none ${itemHoverClasses}`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -433,7 +467,7 @@ const Header = ({
                       <div className="truncate">
                         <div className="text-sm font-medium">Download</div>
                         <div className={`text-[11px] mt-0.5 ${subtitleClasses}`}>
-                          Download as Markdown
+                          Save as .md or .txt
                         </div>
                       </div>
                     </div>
@@ -444,7 +478,7 @@ const Header = ({
 
                   <div className={`border-b my-1 ${dividerClasses}`} />
 
-                  {/* 2. Share option (transitions to Share submenu) */}
+                  {/* 3. Share option (transitions to Share submenu) */}
                   <button
                     type="button"
                     onClick={() => setMenuView("share")}
@@ -485,7 +519,7 @@ const Header = ({
 
                   <div className={`border-b my-1 ${dividerClasses}`} />
 
-                  {/* 3. Available Offline Toggle */}
+                  {/* 4. Available Offline Toggle */}
                   <div
                     onClick={handleToggleOffline}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition cursor-pointer ${itemHoverClasses}`}
@@ -530,7 +564,7 @@ const Header = ({
 
                   <div className={`border-b my-1 ${dividerClasses}`} />
 
-                  {/* 4. Do Not Disturb Toggle */}
+                  {/* 5. Do Not Disturb Toggle */}
                   <div
                     onClick={handleToggleDND}
                     className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition cursor-pointer ${itemHoverClasses}`}
@@ -578,7 +612,7 @@ const Header = ({
 
                   <div className={`border-b my-1 ${dividerClasses}`} />
 
-                  {/* 4. Settings */}
+                  {/* 6. Settings */}
                   <button
                     type="button"
                     onClick={() => {
@@ -620,7 +654,7 @@ const Header = ({
 
                   <div className={`border-b my-1 ${dividerClasses}`} />
 
-                  {/* 5. Collaborate (Disabled / Greyed Out) */}
+                  {/* 7. Collaborate (Disabled / Greyed Out) */}
                   <div
                     title="Collaboration requires login & backend"
                     className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left opacity-35 cursor-not-allowed select-none"
